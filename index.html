@@ -2018,6 +2018,12 @@
             }
         }
 
+        // Hide contact links in personalized mode
+        const contactLinks = document.querySelector('.coordinator-info > div[style*="margin-top"]');
+        if (contactLinks) {
+            contactLinks.style.display = 'none';
+        }
+
         // Unique storage key per person so progress doesn't mix
         const personKey = 'onboarding-' + personName.toLowerCase().replace(/\s+/g, '-');
         const personState = (() => { try { return JSON.parse(localStorage.getItem(personKey)) || {}; } catch { return {}; } })();
