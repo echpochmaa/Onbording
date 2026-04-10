@@ -78,16 +78,17 @@
         /* ===================== CAT MASCOT ===================== */
         .cat-mascot {
             position: fixed;
-            left: 32px;
+            left: 50%;
             bottom: 32px;
             z-index: 200;
+            transform: translateX(-50%);
             transition: all 0.6s cubic-bezier(0.34, 1.56, 0.64, 1);
             cursor: pointer;
             filter: drop-shadow(0 4px 24px rgba(79, 110, 247, 0.3));
         }
 
         .cat-mascot:hover {
-            transform: scale(1.1);
+            transform: translateX(-50%) scale(1.1);
         }
 
         .cat-body {
@@ -165,32 +166,33 @@
             transition: stroke-dashoffset 1s cubic-bezier(0.4, 0, 0.2, 1);
         }
 
-        /* Cat animations */
-        @keyframes catBounce {
-            0%, 100% { transform: translateY(0); }
-            50% { transform: translateY(-12px); }
+        /* Cat animations are defined below with translate(-50%) */
+
+        .cat-mascot.bounce { animation: catBodyBounce 0.5s ease-out; }
+        .cat-mascot.wiggle { animation: catBodyWiggle 0.4s ease-out; }
+        .cat-mascot.purr { animation: catBodyPurr 0.3s ease-out 3; }
+        .cat-mascot.spin { animation: catBodySpin 0.6s ease-out; }
+
+        @keyframes catBodyBounce {
+            0%, 100% { transform: translateX(-50%) translateY(0); }
+            50% { transform: translateX(-50%) translateY(-12px); }
         }
 
-        @keyframes catWiggle {
-            0%, 100% { transform: rotate(0deg); }
-            25% { transform: rotate(-8deg); }
-            75% { transform: rotate(8deg); }
+        @keyframes catBodyWiggle {
+            0%, 100% { transform: translateX(-50%) rotate(0deg); }
+            25% { transform: translateX(-50%) rotate(-8deg); }
+            75% { transform: translateX(-50%) rotate(8deg); }
         }
 
-        @keyframes catSpin {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
+        @keyframes catBodyPurr {
+            0%, 100% { transform: translateX(-50%) scale(1); }
+            50% { transform: translateX(-50%) scale(1.08); }
         }
 
-        @keyframes catPurr {
-            0%, 100% { transform: scale(1); }
-            50% { transform: scale(1.08); }
+        @keyframes catBodySpin {
+            0% { transform: translateX(-50%) rotate(0deg); }
+            100% { transform: translateX(-50%) rotate(360deg); }
         }
-
-        .cat-mascot.bounce .cat-body { animation: catBounce 0.5s ease-out; }
-        .cat-mascot.wiggle .cat-body { animation: catWiggle 0.4s ease-out; }
-        .cat-mascot.purr .cat-body { animation: catPurr 0.3s ease-out 3; }
-        .cat-mascot.spin .cat-body { animation: catSpin 0.6s ease-out; }
 
         /* Cat eyes blink */
         @keyframes blink {
@@ -577,11 +579,13 @@
                 padding-left: 0; margin-left: 0;
             }
             .coordinator-card { flex-direction: column; text-align: center; }
-            .cat-mascot { left: 16px; bottom: 16px; }
+            .cat-mascot { bottom: 16px; }
             .cat-body { width: 60px; height: 60px; }
             .cat-svg { width: 60px; height: 60px; }
             .cat-progress-ring { width: 72px; height: 72px; }
             .cat-bubble { font-size: 12px; bottom: 70px; }
+            .download-apps-grid { grid-template-columns: 1fr; }
+            .admin-panel { width: calc(100% - 32px); }
         }
 
         .completion-overlay {
@@ -688,6 +692,213 @@
 
         @media (max-width: 768px) {
             .admin-panel { width: calc(100% - 32px); right: 16px; }
+        }
+
+        /* ===================== DOWNLOAD APPS BLOCK ===================== */
+        .download-apps-block {
+            margin-bottom: 64px; padding: 0;
+        }
+
+        .download-apps-header {
+            display: flex; align-items: center; justify-content: space-between;
+            padding: 24px 32px; background: var(--surface); border-radius: 20px;
+            cursor: pointer; user-select: none; transition: all 0.3s ease;
+            border: 1px solid var(--border);
+        }
+
+        .download-apps-header:hover {
+            border-color: var(--primary); background: var(--bg-card);
+        }
+
+        .download-apps-title {
+            font-size: 18px; font-weight: 600; display: flex; align-items: center; gap: 12px;
+        }
+
+        .download-apps-icon {
+            font-size: 28px;
+        }
+
+        .download-apps-toggle {
+            font-size: 20px; transition: transform 0.3s ease;
+        }
+
+        .download-apps-header.open .download-apps-toggle {
+            transform: rotate(180deg);
+        }
+
+        .download-apps-content {
+            display: none; overflow: hidden;
+            animation: slideDown 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+        }
+
+        .download-apps-content.show { display: grid; }
+
+        @keyframes slideDown {
+            from { opacity: 0; transform: translateY(-10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .download-apps-grid {
+            display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px; padding: 28px 32px;
+            background: linear-gradient(135deg, rgba(79,110,247,0.05), rgba(20,184,166,0.05));
+            border-radius: 0 0 20px 20px; border: 1px solid var(--border);
+            border-top: none;
+        }
+
+        .app-card {
+            padding: 24px; background: var(--bg-card); border: 1px solid var(--border);
+            border-radius: 16px; transition: all 0.3s ease; cursor: pointer;
+            text-align: center;
+        }
+
+        .app-card:hover {
+            transform: translateY(-4px); border-color: var(--primary);
+            box-shadow: 0 8px 32px rgba(79, 110, 247, 0.2);
+        }
+
+        .app-card-icon {
+            font-size: 48px; margin-bottom: 12px;
+        }
+
+        .app-card-title {
+            font-size: 18px; font-weight: 600; margin-bottom: 12px;
+        }
+
+        .app-card-desc {
+            font-size: 13px; color: var(--text-dim); margin-bottom: 16px;
+        }
+
+        .app-links {
+            display: flex; gap: 8px; flex-wrap: wrap; justify-content: center;
+        }
+
+        .app-link {
+            padding: 6px 12px; background: var(--primary);
+            border-radius: 8px; color: white; font-size: 12px; font-weight: 500;
+            text-decoration: none; transition: all 0.2s ease;
+        }
+
+        .app-link:hover {
+            background: var(--primary-light); transform: scale(1.05);
+        }
+
+        /* ===================== ADMIN TABS ===================== */
+        .admin-tabs {
+            display: flex; gap: 8px; margin-bottom: 20px;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .admin-tab-btn {
+            padding: 10px 16px; background: none; border: none;
+            color: var(--text-dim); font-size: 13px; font-weight: 600;
+            cursor: pointer; transition: all 0.2s ease;
+            border-bottom: 2px solid transparent;
+        }
+
+        .admin-tab-btn:hover {
+            color: var(--primary-light);
+        }
+
+        .admin-tab-btn.active {
+            color: var(--primary-light);
+            border-bottom-color: var(--primary-light);
+        }
+
+        .admin-tab-content {
+            display: none;
+        }
+
+        .admin-tab-content.active {
+            display: block;
+        }
+
+        /* ===================== CONTENT EDITOR ===================== */
+        .content-editor {
+            max-height: 60vh; overflow-y: auto;
+        }
+
+        .edit-section {
+            padding: 16px; background: var(--surface); border-radius: 12px;
+            margin-bottom: 12px;
+        }
+
+        .edit-section-title {
+            font-size: 13px; font-weight: 600; color: var(--primary-light);
+            margin-bottom: 8px;
+        }
+
+        .edit-section textarea {
+            width: 100%; padding: 10px; background: var(--bg);
+            border: 1px solid var(--border); border-radius: 8px;
+            color: var(--text); font-size: 12px; font-family: inherit;
+            resize: vertical; min-height: 80px;
+        }
+
+        .edit-section textarea:focus {
+            outline: none; border-color: var(--primary);
+        }
+
+        /* ===================== SECTION MANAGER ===================== */
+        .section-manager {
+            max-height: 60vh; overflow-y: auto;
+        }
+
+        .section-item {
+            padding: 16px; background: var(--surface); border-radius: 12px;
+            margin-bottom: 12px; display: flex; align-items: center; gap: 12px;
+        }
+
+        .section-item-drag {
+            cursor: grab; color: var(--text-dim); font-size: 18px;
+        }
+
+        .section-item-drag:active {
+            cursor: grabbing;
+        }
+
+        .section-item-info {
+            flex: 1;
+        }
+
+        .section-item-name {
+            font-size: 14px; font-weight: 600; color: var(--text);
+        }
+
+        .section-item-count {
+            font-size: 12px; color: var(--text-dim);
+        }
+
+        .section-item-actions {
+            display: flex; gap: 6px;
+        }
+
+        .section-btn {
+            width: 32px; height: 32px; padding: 0;
+            background: var(--bg); border: 1px solid var(--border);
+            border-radius: 8px; color: var(--text-dim); cursor: pointer;
+            font-size: 14px; transition: all 0.2s ease;
+        }
+
+        .section-btn:hover {
+            background: var(--primary); border-color: var(--primary);
+            color: white;
+        }
+
+        .add-section-form {
+            padding: 16px; background: var(--surface); border-radius: 12px;
+            margin-top: 16px; border: 1px solid var(--primary);
+        }
+
+        .add-section-form input, .add-section-form textarea {
+            width: 100%; padding: 10px; background: var(--bg);
+            border: 1px solid var(--border); border-radius: 8px;
+            color: var(--text); font-size: 13px; font-family: inherit;
+            margin-bottom: 10px;
+        }
+
+        .add-section-form input:focus, .add-section-form textarea:focus {
+            outline: none; border-color: var(--primary);
         }
     </style>
 </head>
@@ -801,30 +1012,66 @@
 <button class="admin-toggle" id="admin-toggle" title="Панель координатора">&#9881;&#65039;</button>
 <div class="admin-panel" id="admin-panel">
     <h3>Панель координатора</h3>
-    <p class="admin-subtitle">Сформируй персональную ссылку для новичка</p>
-    <div class="admin-field">
-        <label>Имя новичка</label>
-        <input type="text" id="admin-name" placeholder="Например: Иван">
+
+    <div class="admin-tabs">
+        <button class="admin-tab-btn active" data-tab="links">Генератор ссылок</button>
+        <button class="admin-tab-btn" data-tab="content">Редактор контента</button>
+        <button class="admin-tab-btn" data-tab="sections">Менеджер секций</button>
     </div>
-    <div class="admin-field">
-        <label>Команда</label>
-        <input type="text" id="admin-team" placeholder="Например: MAILCORE">
+
+    <!-- TAB 1: Link Generator -->
+    <div class="admin-tab-content active" id="tab-links">
+        <p class="admin-subtitle">Сформируй персональную ссылку для новичка</p>
+        <div class="admin-field">
+            <label>Имя новичка</label>
+            <input type="text" id="admin-name" placeholder="Например: Иван">
+        </div>
+        <div class="admin-field">
+            <label>Команда</label>
+            <input type="text" id="admin-team" placeholder="Например: MAILCORE">
+        </div>
+        <div class="admin-field">
+            <label>Руководитель</label>
+            <input type="text" id="admin-lead" placeholder="Например: Алексей Петров">
+        </div>
+        <div class="admin-field">
+            <label>Роль / должность</label>
+            <input type="text" id="admin-role" placeholder="Например: Frontend-разработчик">
+        </div>
+        <div class="admin-result" id="admin-result" style="display:none;">
+            <div class="admin-result-label">Персональная ссылка</div>
+            <div class="admin-result-url" id="admin-url"></div>
+        </div>
+        <button class="admin-btn" id="admin-generate">Сгенерировать ссылку</button>
+        <button class="admin-btn" id="admin-copy" style="display:none; background: linear-gradient(135deg, #14B8A6, #5EEAD4);">Скопировать ссылку</button>
+        <div class="admin-copied" id="admin-copied">Скопировано!</div>
     </div>
-    <div class="admin-field">
-        <label>Руководитель</label>
-        <input type="text" id="admin-lead" placeholder="Например: Алексей Петров">
+
+    <!-- TAB 2: Content Editor -->
+    <div class="admin-tab-content" id="tab-content">
+        <p class="admin-subtitle">Редактируй текст и добавляй ссылки</p>
+        <div class="content-editor" id="content-editor">
+            <!-- Будет заполнено JS -->
+        </div>
+        <button class="admin-btn" id="save-content">Сохранить изменения</button>
     </div>
-    <div class="admin-field">
-        <label>Роль / должность</label>
-        <input type="text" id="admin-role" placeholder="Например: Frontend-разработчик">
+
+    <!-- TAB 3: Section Manager -->
+    <div class="admin-tab-content" id="tab-sections">
+        <p class="admin-subtitle">Управляй структурой онбординга</p>
+        <div class="section-manager" id="section-manager">
+            <!-- Будет заполнено JS -->
+        </div>
+        <button class="admin-btn" id="add-section-btn">+ Добавить новую секцию</button>
+        <div class="add-section-form" id="add-section-form" style="display:none;">
+            <h4 style="margin-bottom: 12px; color: var(--text);">Новая секция</h4>
+            <input type="text" id="new-section-title" placeholder="Название">
+            <input type="text" id="new-section-icon" placeholder="Эмодзи (например: &#128451;)">
+            <textarea id="new-section-desc" placeholder="Описание"></textarea>
+            <button class="admin-btn" id="create-section">Создать</button>
+            <button class="admin-btn" id="cancel-section" style="background: var(--surface); color: var(--text);">Отмена</button>
+        </div>
     </div>
-    <div class="admin-result" id="admin-result" style="display:none;">
-        <div class="admin-result-label">Персональная ссылка</div>
-        <div class="admin-result-url" id="admin-url"></div>
-    </div>
-    <button class="admin-btn" id="admin-generate">Сгенерировать ссылку</button>
-    <button class="admin-btn" id="admin-copy" style="display:none; background: linear-gradient(135deg, #14B8A6, #5EEAD4);">Скопировать ссылку</button>
-    <div class="admin-copied" id="admin-copied">Скопировано!</div>
 </div>
 
 <!-- Hero -->
@@ -841,6 +1088,49 @@
     <p class="hero-subtitle" id="hero-subtitle">
         Онбординг на новом месте может быть волнительным. Этот чек-лист поможет тебе ничего не забыть и быстро влиться в команду.
     </p>
+
+    <!-- Download Apps Block -->
+    <div class="download-apps-block">
+        <div class="download-apps-header" id="download-apps-header">
+            <div class="download-apps-title">
+                <span class="download-apps-icon">📲</span>
+                <span>Скачай наши приложения</span>
+            </div>
+            <div class="download-apps-toggle">▼</div>
+        </div>
+        <div class="download-apps-content" id="download-apps-content">
+            <div class="download-apps-grid">
+                <div class="app-card">
+                    <div class="app-card-icon">📧</div>
+                    <div class="app-card-title">Почта</div>
+                    <div class="app-card-desc">Управляй почтой везде</div>
+                    <div class="app-links">
+                        <a href="https://apps.apple.com" target="_blank" rel="noopener" class="app-link">iOS</a>
+                        <a href="https://play.google.com" target="_blank" rel="noopener" class="app-link">Android</a>
+                    </div>
+                </div>
+                <div class="app-card">
+                    <div class="app-card-icon">📅</div>
+                    <div class="app-card-title">Календарь</div>
+                    <div class="app-card-desc">Планируй встречи</div>
+                    <div class="app-links">
+                        <a href="https://apps.apple.com" target="_blank" rel="noopener" class="app-link">iOS</a>
+                        <a href="https://play.google.com" target="_blank" rel="noopener" class="app-link">Android</a>
+                    </div>
+                </div>
+                <div class="app-card">
+                    <div class="app-card-icon">☁️</div>
+                    <div class="app-card-title">Диск</div>
+                    <div class="app-card-desc">Облако для файлов</div>
+                    <div class="app-links">
+                        <a href="https://apps.apple.com" target="_blank" rel="noopener" class="app-link">iOS</a>
+                        <a href="https://play.google.com" target="_blank" rel="noopener" class="app-link">Android</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <div class="hero-products">
         <div class="product-chip"><span class="icon">&#9993;&#65039;</span> Почта</div>
         <div class="product-chip"><span class="icon">&#128197;</span> Календарь</div>
@@ -1564,6 +1854,14 @@
         updateProgressPersonalized();
     }
 
+    // ==================== DOWNLOAD APPS ====================
+    const downloadHeader = document.getElementById('download-apps-header');
+    const downloadContent = document.getElementById('download-apps-content');
+
+    downloadHeader.addEventListener('click', () => {
+        downloadContent.classList.toggle('show');
+    });
+
     // ==================== ADMIN PANEL ====================
     const adminToggle = document.getElementById('admin-toggle');
     const adminPanel = document.getElementById('admin-panel');
@@ -1577,6 +1875,149 @@
         if (!adminPanel.contains(e.target) && e.target !== adminToggle) {
             adminPanel.classList.remove('show');
         }
+    });
+
+    // Admin tabs
+    const tabButtons = document.querySelectorAll('.admin-tab-btn');
+    const tabContents = document.querySelectorAll('.admin-tab-content');
+
+    tabButtons.forEach(btn => {
+        btn.addEventListener('click', () => {
+            const tab = btn.dataset.tab;
+            tabButtons.forEach(b => b.classList.remove('active'));
+            tabContents.forEach(c => c.classList.remove('active'));
+            btn.classList.add('active');
+            document.getElementById('tab-' + tab).classList.add('active');
+
+            if (tab === 'content') populateContentEditor();
+            if (tab === 'sections') populateSectionManager();
+        });
+    });
+
+    // ==================== CONTENT EDITOR ====================
+    function populateContentEditor() {
+        const editor = document.getElementById('content-editor');
+        editor.innerHTML = '';
+
+        const sections = document.querySelectorAll('.section');
+        sections.forEach((section, idx) => {
+            const title = section.querySelector('.section-title');
+            const desc = section.querySelector('.section-desc');
+
+            const editDiv = document.createElement('div');
+            editDiv.className = 'edit-section';
+
+            const titleText = title ? title.innerText : 'Секция ' + idx;
+            const descText = desc ? desc.innerText : '';
+
+            editDiv.innerHTML = `
+                <div class="edit-section-title">${titleText}</div>
+                <textarea data-section="${idx}" data-type="desc">${descText}</textarea>
+            `;
+
+            editor.appendChild(editDiv);
+        });
+    }
+
+    document.getElementById('save-content').addEventListener('click', () => {
+        const textareas = document.querySelectorAll('#content-editor textarea');
+        textareas.forEach(ta => {
+            const idx = ta.dataset.section;
+            const sections = document.querySelectorAll('.section');
+            if (sections[idx]) {
+                const descEl = sections[idx].querySelector('.section-desc');
+                if (descEl) descEl.innerText = ta.value;
+            }
+        });
+
+        // Feedback
+        const btn = document.getElementById('save-content');
+        const origText = btn.innerText;
+        btn.innerText = 'Сохранено!';
+        setTimeout(() => btn.innerText = origText, 2000);
+
+        // Store in localStorage
+        localStorage.setItem('onboarding-content-changes', JSON.stringify({
+            timestamp: Date.now(),
+            changes: Array.from(textareas).map(ta => ({
+                section: ta.dataset.section,
+                content: ta.value
+            }))
+        }));
+    });
+
+    // ==================== SECTION MANAGER ====================
+    function populateSectionManager() {
+        const manager = document.getElementById('section-manager');
+        manager.innerHTML = '';
+
+        const sections = document.querySelectorAll('.section');
+        sections.forEach((section, idx) => {
+            const title = section.querySelector('.section-title');
+            const items = section.querySelectorAll('.check-item').length;
+
+            const itemDiv = document.createElement('div');
+            itemDiv.className = 'section-item';
+            itemDiv.innerHTML = `
+                <div class="section-item-drag">≡</div>
+                <div class="section-item-info">
+                    <div class="section-item-name">${title ? title.innerText : 'Секция ' + idx}</div>
+                    <div class="section-item-count">${items} пунктов</div>
+                </div>
+                <div class="section-item-actions">
+                    <button class="section-btn" data-action="edit" data-idx="${idx}" title="Редактировать">✏️</button>
+                    <button class="section-btn" data-action="delete" data-idx="${idx}" title="Удалить">🗑️</button>
+                </div>
+            `;
+
+            manager.appendChild(itemDiv);
+        });
+
+        // Add event listeners
+        manager.querySelectorAll('.section-btn').forEach(btn => {
+            btn.addEventListener('click', () => {
+                const action = btn.dataset.action;
+                const idx = btn.dataset.idx;
+                if (action === 'delete') {
+                    if (confirm('Удалить эту секцию?')) {
+                        document.querySelectorAll('.section')[idx].remove();
+                        populateSectionManager();
+                    }
+                }
+            });
+        });
+    }
+
+    // Add section
+    document.getElementById('add-section-btn').addEventListener('click', () => {
+        document.getElementById('add-section-form').style.display = 'block';
+    });
+
+    document.getElementById('cancel-section').addEventListener('click', () => {
+        document.getElementById('add-section-form').style.display = 'none';
+    });
+
+    document.getElementById('create-section').addEventListener('click', () => {
+        const title = document.getElementById('new-section-title').value.trim();
+        const icon = document.getElementById('new-section-icon').value.trim();
+        const desc = document.getElementById('new-section-desc').value.trim();
+
+        if (!title) {
+            alert('Укажи название секции');
+            return;
+        }
+
+        // Store new section data
+        const newSection = { title, icon: icon || '📋', desc };
+        let customSections = JSON.parse(localStorage.getItem('custom-sections') || '[]');
+        customSections.push(newSection);
+        localStorage.setItem('custom-sections', JSON.stringify(customSections));
+
+        alert('Секция добавлена! Обнови страницу.');
+        document.getElementById('add-section-form').style.display = 'none';
+        document.getElementById('new-section-title').value = '';
+        document.getElementById('new-section-icon').value = '';
+        document.getElementById('new-section-desc').value = '';
     });
 
     document.getElementById('admin-generate').addEventListener('click', () => {
