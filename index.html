@@ -546,6 +546,60 @@
         .meeting-meta { font-size: 13px; color: var(--text-dim); }
         .meeting-meta span { display: block; margin-bottom: 2px; }
 
+        /* Meeting tooltips */
+        .meeting-tooltip {
+            position: relative; cursor: help;
+        }
+
+        .meeting-tooltip-icon {
+            display: inline-block; width: 16px; height: 16px;
+            border-radius: 50%; background: var(--primary); color: white;
+            text-align: center; line-height: 16px; font-size: 12px;
+            margin-left: 6px; font-weight: bold;
+        }
+
+        .meeting-tooltip-content {
+            position: absolute; bottom: 100%; left: 50%; transform: translateX(-50%);
+            background: var(--bg-card); border: 1px solid var(--border);
+            border-radius: 12px; padding: 12px 14px; white-space: nowrap;
+            z-index: 100; opacity: 0; pointer-events: none;
+            transition: opacity 0.3s ease; margin-bottom: 8px;
+            font-size: 12px; color: var(--text-muted);
+            box-shadow: 0 8px 24px rgba(0,0,0,0.3);
+        }
+
+        .meeting-tooltip:hover .meeting-tooltip-content {
+            opacity: 1;
+        }
+
+        /* Hidden blocks */
+        .section.hidden { display: none; }
+
+        /* Block visibility editor */
+        .blocks-visibility {
+            max-height: 300px; overflow-y: auto; margin-bottom: 16px;
+        }
+
+        .visibility-item {
+            display: flex; align-items: center; gap: 10px;
+            padding: 10px 12px; background: var(--surface);
+            border-radius: 8px; margin-bottom: 8px;
+        }
+
+        .visibility-item input[type="checkbox"] {
+            width: 18px; height: 18px; cursor: pointer;
+        }
+
+        .visibility-item label {
+            flex: 1; cursor: pointer; font-size: 14px;
+        }
+
+        .visibility-apply-btn {
+            width: 100%; padding: 10px; background: var(--primary);
+            border: none; border-radius: 8px; color: white;
+            cursor: pointer; font-weight: 600; font-size: 13px;
+        }
+
         .divider {
             height: 1px;
             background: linear-gradient(90deg, transparent, var(--border), transparent);
@@ -702,6 +756,7 @@
         /* ===================== DOWNLOAD APPS BLOCK ===================== */
         .download-apps-block {
             margin-bottom: 64px; padding: 0;
+            display: flex; flex-direction: column; align-items: stretch;
         }
 
         .download-apps-header {
@@ -746,12 +801,12 @@
         }
 
         .download-apps-grid {
-            display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
-            gap: 16px; padding: 20px; margin-top: 12px;
+            display: flex; gap: 16px; padding: 20px; margin-top: 12px;
+            justify-content: center; flex-wrap: wrap;
         }
 
         .app-card {
-            padding: 16px; background: var(--bg-card); border: 1px solid var(--border);
+            flex: 0 1 160px; padding: 16px; background: var(--bg-card); border: 1px solid var(--border);
             border-radius: 12px; transition: all 0.3s ease; text-align: center;
             display: flex; flex-direction: column; align-items: center;
         }
@@ -785,6 +840,14 @@
 
         .app-link:hover {
             background: var(--primary-light); transform: scale(1.05);
+        }
+
+        .app-card-disk .app-links {
+            display: grid; grid-template-columns: 1fr 1fr; gap: 8px;
+        }
+
+        .app-card-disk .app-link {
+            padding: 4px 8px; font-size: 10px;
         }
 
         /* Apps Editor */
@@ -1174,6 +1237,14 @@
             <label>Роль / должность</label>
             <input type="text" id="admin-role" placeholder="Например: Frontend-разработчик">
         </div>
+
+        <div class="admin-field">
+            <label style="font-weight: 600; margin-bottom: 10px; display: block;">Какие блоки показывать:</label>
+            <div class="blocks-visibility" id="blocks-visibility">
+                <!-- Заполнено JS -->
+            </div>
+        </div>
+
         <div class="admin-result" id="admin-result" style="display:none;">
             <div class="admin-result-label">Персональная ссылка</div>
             <div class="admin-result-url" id="admin-url"></div>
@@ -1291,6 +1362,10 @@
         <div class="coordinator-info">
             <h3>Вероника Сапронова</h3>
             <p>Твой координатор. По всем интересующим тебя вопросам обращайся к ней — она поможет сориентироваться и ответит на любые вопросы.</p>
+            <div style="margin-top: 12px; display: flex; gap: 12px; flex-wrap: wrap;">
+                <a href="https://t.me/sprnv_v" target="_blank" rel="noopener" style="display: inline-flex; align-items: center; gap: 6px; padding: 8px 14px; background: #0088cc; color: white; border-radius: 8px; text-decoration: none; font-size: 13px; font-weight: 500;">📱 Telegram</a>
+                <a href="https://confluence.rambler-co.ru/spaces/HD/pages/272620440/Sberworks+%D0%97%D0%B0%D1%8F%D0%B2%D0%BA%D0%B0+%D0%BD%D0%B0+%D1%81%D0%BE%D0%B7%D0%B4%D0%B0%D0%BD%D0%B8%D0%B5+%D1%83%D1%87%D0%B5%D1%82%D0%BD%D0%BE%D0%B9+%D0%B7%D0%B0%D0%BF%D0%B8%D1%81%D0%B8+%D0%B2+Sberworks" target="_blank" rel="noopener" style="display: inline-flex; align-items: center; gap: 6px; padding: 8px 14px; background: #14B8A6; color: white; border-radius: 8px; text-decoration: none; font-size: 13px; font-weight: 500;">📋 Заполни форму на Sberworks</a>
+            </div>
         </div>
     </div>
 
@@ -1560,7 +1635,13 @@
             </div>
             <div class="meeting-card">
                 <div class="meeting-freq">Раз в 2 недели</div>
-                <h4>Демо день</h4>
+                <h4>
+                    Демо день
+                    <span class="meeting-tooltip">
+                        <span class="meeting-tooltip-icon">ℹ️</span>
+                        <span class="meeting-tooltip-content">Показываем прогресс за спринт по продуктам</span>
+                    </span>
+                </h4>
                 <div class="meeting-meta">
                     <span>&#128337; 14:00 – 15:00</span>
                     <span>&#128197; Пятница, перед новым спринтом</span>
@@ -1569,7 +1650,13 @@
             </div>
             <div class="meeting-card">
                 <div class="meeting-freq">Ежемесячно</div>
-                <h4>All Hands</h4>
+                <h4>
+                    All Hands
+                    <span class="meeting-tooltip">
+                        <span class="meeting-tooltip-icon">ℹ️</span>
+                        <span class="meeting-tooltip-content">Встреча где делимся успехами и достижениями</span>
+                    </span>
+                </h4>
                 <div class="meeting-meta">
                     <span>&#128337; 15:00 – 16:30</span>
                     <span>&#128197; Пятница, конец месяца (очно)</span>
@@ -1771,6 +1858,9 @@
     function updateProgress() {
         const groups = {};
         allItems.forEach((item) => {
+            const section = item.closest('.section');
+            if (section && section.classList.contains('hidden')) return;
+
             const group = item.closest('[data-group]').dataset.group;
             if (!groups[group]) groups[group] = { total: 0, checked: 0 };
             groups[group].total++;
@@ -1879,6 +1969,23 @@
     const personTeam = params.get('team');
     const personLead = params.get('lead');
     const personRole = params.get('role');
+    const hiddenParam = params.get('hidden');
+    const hiddenSections = hiddenParam ? hiddenParam.split(',') : [];
+
+    // Hide sections
+    if (hiddenSections.length > 0) {
+        document.querySelectorAll('.section').forEach(section => {
+            const sectionId = section.id;
+            if (hiddenSections.includes(sectionId)) {
+                section.classList.add('hidden');
+                // Also hide divider after hidden section
+                const divider = section.nextElementSibling;
+                if (divider && divider.classList.contains('divider')) {
+                    divider.classList.add('hidden');
+                }
+            }
+        });
+    }
 
     if (personName) {
         // Personalize hero
@@ -2060,9 +2167,34 @@
 
     // Default apps data
     const defaultApps = [
-        { icon: '📧', title: 'Почта', desc: 'Управляй почтой везде', stores: [{ name: 'iOS', url: 'https://apps.apple.com' }, { name: 'Android', url: 'https://play.google.com' }] },
-        { icon: '📅', title: 'Календарь', desc: 'Планируй встречи', stores: [{ name: 'iOS', url: 'https://apps.apple.com' }, { name: 'Android', url: 'https://play.google.com' }] },
-        { icon: '☁️', title: 'Диск', desc: 'Облако для файлов', stores: [{ name: 'iOS', url: 'https://apps.apple.com' }, { name: 'Android', url: 'https://play.google.com' }] }
+        {
+            icon: '📧',
+            title: 'Почта',
+            desc: 'Управляй почтой везде',
+            stores: [
+                { name: 'RuStore', url: 'https://www.rustore.ru/catalog/app/ru.rambler.mail' }
+            ]
+        },
+        {
+            icon: '📅',
+            title: 'Календарь',
+            desc: 'Планируй встречи',
+            stores: [
+                { name: 'iOS', url: 'https://apps.apple.com/ru/app/%D0%BA%D0%B0%D0%BB%D0%B5%D0%BD%D0%B4%D0%B0%D1%80%D1%8C-%D1%83%D0%BC%D0%BD%D1%8B%D0%B9-%D0%BF%D0%BE%D0%BC%D0%BE%D1%89%D0%BD%D0%B8%D0%BA/id6746786886' },
+                { name: 'Android', url: 'https://www.rustore.ru/catalog/app/com.mcd.superapp' }
+            ]
+        },
+        {
+            icon: '☁️',
+            title: 'Диск',
+            desc: 'Облако для файлов',
+            stores: [
+                { name: 'Galaxy Store', url: 'https://galaxystore.samsung.com/detail/com.cloud.disk' },
+                { name: 'RuStore', url: 'https://www.rustore.ru/catalog/app/com.cloud.disk' },
+                { name: 'Mi App', url: 'https://global.app.mi.com/details?lo=ES&la=ru&id=com.cloud.disk' },
+                { name: 'AppGallery', url: 'https://appgallery.huawei.com/#/app/C107320313' }
+            ]
+        }
     ];
 
     function getAppsData() {
@@ -2077,7 +2209,7 @@
 
         apps.forEach((app, idx) => {
             const card = document.createElement('div');
-            card.className = 'app-card';
+            card.className = 'app-card' + (app.title === 'Диск' ? ' app-card-disk' : '');
             const storesHtml = app.stores.map(s => `<a href="${s.url}" target="_blank" rel="noopener" class="app-link">${s.name}</a>`).join('');
             card.innerHTML = `
                 <div class="app-card-icon">${app.icon}</div>
@@ -2424,6 +2556,28 @@
         document.getElementById('new-section-desc').value = '';
     });
 
+    // Populate blocks visibility
+    function populateBlocksVisibility() {
+        const container = document.getElementById('blocks-visibility');
+        const sections = document.querySelectorAll('.section');
+
+        container.innerHTML = '';
+        sections.forEach((section, idx) => {
+            const title = section.querySelector('.section-title');
+            const sectionId = section.id || 'section-' + idx;
+
+            const item = document.createElement('div');
+            item.className = 'visibility-item';
+            item.innerHTML = `
+                <input type="checkbox" id="vis-${idx}" data-section="${sectionId}" checked>
+                <label for="vis-${idx}">${title ? title.innerText : 'Секция ' + idx}</label>
+            `;
+
+            container.appendChild(item);
+        });
+    }
+    populateBlocksVisibility();
+
     document.getElementById('admin-generate').addEventListener('click', () => {
         const name = document.getElementById('admin-name').value.trim();
         const team = document.getElementById('admin-team').value.trim();
@@ -2443,6 +2597,18 @@
         if (lead) p.set('lead', lead);
         if (role) p.set('role', role);
 
+        // Collect hidden sections
+        const hiddenSections = [];
+        document.querySelectorAll('#blocks-visibility input[type="checkbox"]').forEach(checkbox => {
+            if (!checkbox.checked) {
+                hiddenSections.push(checkbox.dataset.section);
+            }
+        });
+
+        if (hiddenSections.length > 0) {
+            p.set('hidden', hiddenSections.join(','));
+        }
+
         const url = base + '?' + p.toString();
         document.getElementById('admin-url').textContent = url;
         document.getElementById('admin-result').style.display = 'block';
@@ -2460,6 +2626,8 @@
             setTimeout(() => copied.classList.remove('show'), 2000);
         });
     });
+
+    document.getElementById('edit-apps-btn').addEventListener('click', openAppsEditor);
 })();
 </script>
 
