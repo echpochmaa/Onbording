@@ -2018,11 +2018,16 @@
             }
         }
 
-        // Hide contact links in personalized mode
+        // Hide contact links and admin panel in personalized mode
         const contactLinks = document.querySelector('.coordinator-info > div[style*="margin-top"]');
         if (contactLinks) {
             contactLinks.style.display = 'none';
         }
+
+        const adminToggle = document.getElementById('admin-toggle');
+        const adminPanel = document.getElementById('admin-panel');
+        if (adminToggle) adminToggle.style.display = 'none';
+        if (adminPanel) adminPanel.style.display = 'none';
 
         // Unique storage key per person so progress doesn't mix
         const personKey = 'onboarding-' + personName.toLowerCase().replace(/\s+/g, '-');
