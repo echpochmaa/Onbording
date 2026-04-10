@@ -78,17 +78,22 @@
         /* ===================== CAT MASCOT ===================== */
         .cat-mascot {
             position: fixed;
-            left: 50%;
-            bottom: 32px;
+            left: 24px;
+            bottom: 24px;
             z-index: 200;
-            transform: translateX(-50%);
-            transition: all 0.6s cubic-bezier(0.34, 1.56, 0.64, 1);
-            cursor: pointer;
+            transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+            cursor: grab;
             filter: drop-shadow(0 4px 24px rgba(79, 110, 247, 0.3));
+            user-select: none;
         }
 
         .cat-mascot:hover {
-            transform: translateX(-50%) scale(1.1);
+            transform: scale(1.1);
+        }
+
+        .cat-mascot.dragging {
+            cursor: grabbing;
+            filter: drop-shadow(0 8px 32px rgba(79, 110, 247, 0.6));
         }
 
         .cat-body {
@@ -174,24 +179,24 @@
         .cat-mascot.spin { animation: catBodySpin 0.6s ease-out; }
 
         @keyframes catBodyBounce {
-            0%, 100% { transform: translateX(-50%) translateY(0); }
-            50% { transform: translateX(-50%) translateY(-12px); }
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-12px); }
         }
 
         @keyframes catBodyWiggle {
-            0%, 100% { transform: translateX(-50%) rotate(0deg); }
-            25% { transform: translateX(-50%) rotate(-8deg); }
-            75% { transform: translateX(-50%) rotate(8deg); }
+            0%, 100% { transform: rotate(0deg); }
+            25% { transform: rotate(-8deg); }
+            75% { transform: rotate(8deg); }
         }
 
         @keyframes catBodyPurr {
-            0%, 100% { transform: translateX(-50%) scale(1); }
-            50% { transform: translateX(-50%) scale(1.08); }
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.08); }
         }
 
         @keyframes catBodySpin {
-            0% { transform: translateX(-50%) rotate(0deg); }
-            100% { transform: translateX(-50%) rotate(360deg); }
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
         }
 
         /* Cat eyes blink */
@@ -701,25 +706,27 @@
 
         .download-apps-header {
             display: flex; align-items: center; justify-content: space-between;
-            padding: 24px 32px; background: var(--surface); border-radius: 20px;
+            padding: 20px 28px; background: linear-gradient(135deg, rgba(79,110,247,0.1), rgba(20,184,166,0.1));
+            border: 1px solid rgba(79,110,247,0.2); border-radius: 16px;
             cursor: pointer; user-select: none; transition: all 0.3s ease;
-            border: 1px solid var(--border);
         }
 
         .download-apps-header:hover {
-            border-color: var(--primary); background: var(--bg-card);
+            background: linear-gradient(135deg, rgba(79,110,247,0.15), rgba(20,184,166,0.15));
+            border-color: var(--primary);
         }
 
         .download-apps-title {
-            font-size: 18px; font-weight: 600; display: flex; align-items: center; gap: 12px;
+            font-size: 16px; font-weight: 600; display: flex; align-items: center; gap: 12px;
+            color: var(--text);
         }
 
         .download-apps-icon {
-            font-size: 28px;
+            font-size: 24px;
         }
 
         .download-apps-toggle {
-            font-size: 20px; transition: transform 0.3s ease;
+            font-size: 18px; transition: transform 0.3s ease; color: var(--text-dim);
         }
 
         .download-apps-header.open .download-apps-toggle {
@@ -731,7 +738,7 @@
             animation: slideDown 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
         }
 
-        .download-apps-content.show { display: grid; }
+        .download-apps-content.show { display: block; }
 
         @keyframes slideDown {
             from { opacity: 0; transform: translateY(-10px); }
@@ -739,48 +746,110 @@
         }
 
         .download-apps-grid {
-            display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-            gap: 20px; padding: 28px 32px;
-            background: linear-gradient(135deg, rgba(79,110,247,0.05), rgba(20,184,166,0.05));
-            border-radius: 0 0 20px 20px; border: 1px solid var(--border);
-            border-top: none;
+            display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+            gap: 16px; padding: 20px; margin-top: 12px;
         }
 
         .app-card {
-            padding: 24px; background: var(--bg-card); border: 1px solid var(--border);
-            border-radius: 16px; transition: all 0.3s ease; cursor: pointer;
-            text-align: center;
+            padding: 16px; background: var(--bg-card); border: 1px solid var(--border);
+            border-radius: 12px; transition: all 0.3s ease; text-align: center;
+            display: flex; flex-direction: column; align-items: center;
         }
 
         .app-card:hover {
-            transform: translateY(-4px); border-color: var(--primary);
-            box-shadow: 0 8px 32px rgba(79, 110, 247, 0.2);
+            transform: translateY(-3px); border-color: var(--primary);
+            box-shadow: 0 6px 20px rgba(79, 110, 247, 0.15);
         }
 
         .app-card-icon {
-            font-size: 48px; margin-bottom: 12px;
+            font-size: 36px; margin-bottom: 10px;
         }
 
         .app-card-title {
-            font-size: 18px; font-weight: 600; margin-bottom: 12px;
+            font-size: 15px; font-weight: 600; margin-bottom: 6px;
         }
 
         .app-card-desc {
-            font-size: 13px; color: var(--text-dim); margin-bottom: 16px;
+            font-size: 12px; color: var(--text-dim); margin-bottom: 12px; line-height: 1.4;
         }
 
         .app-links {
-            display: flex; gap: 8px; flex-wrap: wrap; justify-content: center;
+            display: flex; gap: 6px; flex-wrap: wrap; justify-content: center;
         }
 
         .app-link {
-            padding: 6px 12px; background: var(--primary);
-            border-radius: 8px; color: white; font-size: 12px; font-weight: 500;
-            text-decoration: none; transition: all 0.2s ease;
+            padding: 5px 10px; background: var(--primary); border-radius: 6px;
+            color: white; font-size: 11px; font-weight: 500; text-decoration: none;
+            transition: all 0.2s ease; border: 1px solid transparent;
         }
 
         .app-link:hover {
             background: var(--primary-light); transform: scale(1.05);
+        }
+
+        /* Apps Editor */
+        .apps-editor-modal {
+            position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%);
+            background: var(--bg-card); border: 1px solid var(--border);
+            border-radius: 20px; padding: 28px; z-index: 1001;
+            max-width: 500px; width: 90%; max-height: 80vh; overflow-y: auto;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.5); display: none;
+        }
+
+        .apps-editor-modal.show { display: block; }
+        .apps-editor-overlay {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.6); z-index: 1000; display: none;
+        }
+        .apps-editor-overlay.show { display: block; }
+
+        .apps-editor-modal h3 { margin-bottom: 16px; }
+        .app-edit-item {
+            padding: 16px; background: var(--surface); border-radius: 12px;
+            margin-bottom: 12px; border: 1px solid var(--border);
+        }
+
+        .app-edit-field {
+            margin-bottom: 10px;
+        }
+
+        .app-edit-field label {
+            display: block; font-size: 12px; color: var(--text-dim); margin-bottom: 4px; font-weight: 600;
+        }
+
+        .app-edit-field input {
+            width: 100%; padding: 8px 12px; background: var(--bg); border: 1px solid var(--border);
+            border-radius: 8px; color: var(--text); font-size: 13px; font-family: inherit;
+        }
+
+        .app-edit-field input:focus {
+            outline: none; border-color: var(--primary);
+        }
+
+        .app-stores {
+            background: var(--bg); border-radius: 8px; padding: 10px;
+            margin-top: 10px;
+        }
+
+        .app-store-item {
+            display: flex; gap: 8px; margin-bottom: 8px;
+        }
+
+        .app-store-item input {
+            flex: 1; padding: 6px 10px; background: var(--surface);
+            border: 1px solid var(--border); border-radius: 6px;
+            color: var(--text); font-size: 12px;
+        }
+
+        .app-store-item button {
+            padding: 6px 10px; background: #ef4444; border: none;
+            border-radius: 6px; color: white; cursor: pointer; font-size: 12px;
+        }
+
+        .app-add-store {
+            padding: 8px 12px; background: var(--primary); border: none;
+            border-radius: 8px; color: white; cursor: pointer; font-size: 12px;
+            width: 100%; font-weight: 600;
         }
 
         /* ===================== ADMIN TABS ===================== */
@@ -820,23 +889,78 @@
 
         .edit-section {
             padding: 16px; background: var(--surface); border-radius: 12px;
-            margin-bottom: 12px;
+            margin-bottom: 16px; border: 1px solid var(--border);
         }
 
         .edit-section-title {
             font-size: 13px; font-weight: 600; color: var(--primary-light);
-            margin-bottom: 8px;
+            margin-bottom: 12px; padding-bottom: 8px; border-bottom: 1px solid var(--border);
         }
 
-        .edit-section textarea {
-            width: 100%; padding: 10px; background: var(--bg);
-            border: 1px solid var(--border); border-radius: 8px;
-            color: var(--text); font-size: 12px; font-family: inherit;
-            resize: vertical; min-height: 80px;
+        .edit-section-content {
+            padding: 12px; background: var(--bg); border-radius: 8px;
+            border: 1px solid var(--border); min-height: 100px;
+            color: var(--text); font-size: 14px; line-height: 1.6;
+            outline: none; word-wrap: break-word;
+            margin-bottom: 10px; cursor: text;
         }
 
-        .edit-section textarea:focus {
-            outline: none; border-color: var(--primary);
+        .edit-section-content:focus {
+            border-color: var(--primary); box-shadow: 0 0 0 2px rgba(79, 110, 247, 0.1);
+        }
+
+        .edit-toolbar {
+            display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 10px;
+        }
+
+        .edit-btn {
+            padding: 6px 12px; background: var(--bg); border: 1px solid var(--border);
+            border-radius: 6px; color: var(--text); font-size: 12px; cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .edit-btn:hover {
+            background: var(--primary); border-color: var(--primary); color: white;
+        }
+
+        .link-dialog {
+            position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%);
+            background: var(--bg-card); border: 1px solid var(--border);
+            border-radius: 20px; padding: 28px; z-index: 1001;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.5); display: none;
+            max-width: 400px; width: 90%;
+        }
+
+        .link-dialog.show { display: block; }
+        .link-dialog-overlay {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.6); z-index: 1000; display: none;
+        }
+        .link-dialog-overlay.show { display: block; }
+
+        .link-dialog h4 { margin-bottom: 16px; }
+        .link-dialog input {
+            width: 100%; padding: 10px; margin-bottom: 10px;
+            background: var(--bg); border: 1px solid var(--border);
+            border-radius: 8px; color: var(--text); font-size: 13px;
+        }
+        .link-dialog input:focus { outline: none; border-color: var(--primary); }
+
+        .link-dialog-buttons {
+            display: flex; gap: 8px;
+        }
+
+        .link-dialog-buttons button {
+            flex: 1; padding: 10px; border: none; border-radius: 8px;
+            cursor: pointer; font-weight: 600; font-size: 13px;
+        }
+
+        .link-dialog-buttons .confirm {
+            background: var(--primary); color: white;
+        }
+
+        .link-dialog-buttons .cancel {
+            background: var(--surface); color: var(--text);
         }
 
         /* ===================== SECTION MANAGER ===================== */
@@ -849,12 +973,23 @@
             margin-bottom: 12px; display: flex; align-items: center; gap: 12px;
         }
 
-        .section-item-drag {
-            cursor: grab; color: var(--text-dim); font-size: 18px;
+        .section-item-order {
+            display: flex; flex-direction: column; gap: 4px;
         }
 
-        .section-item-drag:active {
-            cursor: grabbing;
+        .section-order-btn {
+            width: 28px; height: 28px; padding: 0;
+            background: var(--bg); border: 1px solid var(--border);
+            border-radius: 6px; color: var(--text-dim); cursor: pointer;
+            font-size: 12px; transition: all 0.2s ease;
+        }
+
+        .section-order-btn:hover:not(:disabled) {
+            background: var(--primary); border-color: var(--primary); color: white;
+        }
+
+        .section-order-btn:disabled {
+            opacity: 0.3; cursor: not-allowed;
         }
 
         .section-item-info {
@@ -1012,6 +1147,7 @@
 <button class="admin-toggle" id="admin-toggle" title="Панель координатора">&#9881;&#65039;</button>
 <div class="admin-panel" id="admin-panel">
     <h3>Панель координатора</h3>
+    <button class="admin-btn" id="edit-apps-btn" style="margin-bottom: 16px; background: linear-gradient(135deg, #14B8A6, #5EEAD4);">📱 Редактировать приложения</button>
 
     <div class="admin-tabs">
         <button class="admin-tab-btn active" data-tab="links">Генератор ссылок</button>
@@ -1049,11 +1185,23 @@
 
     <!-- TAB 2: Content Editor -->
     <div class="admin-tab-content" id="tab-content">
-        <p class="admin-subtitle">Редактируй текст и добавляй ссылки</p>
+        <p class="admin-subtitle">Кликай на текст для редактирования. Выдели текст и нажми "Ссылка" чтобы добавить ссылку</p>
         <div class="content-editor" id="content-editor">
             <!-- Будет заполнено JS -->
         </div>
-        <button class="admin-btn" id="save-content">Сохранить изменения</button>
+        <button class="admin-btn" id="save-content">💾 Сохранить изменения</button>
+    </div>
+
+    <!-- Link Dialog -->
+    <div class="link-dialog-overlay" id="link-overlay"></div>
+    <div class="link-dialog" id="link-dialog">
+        <h4>Добавить ссылку</h4>
+        <input type="text" id="link-url" placeholder="https://example.com" autofocus>
+        <p style="font-size: 12px; color: var(--text-dim); margin-bottom: 12px;">Выделенный текст: <strong id="link-text-preview"></strong></p>
+        <div class="link-dialog-buttons">
+            <button class="confirm" id="link-confirm">Добавить</button>
+            <button class="cancel" id="link-cancel">Отмена</button>
+        </div>
     </div>
 
     <!-- TAB 3: Section Manager -->
@@ -1099,36 +1247,18 @@
             <div class="download-apps-toggle">▼</div>
         </div>
         <div class="download-apps-content" id="download-apps-content">
-            <div class="download-apps-grid">
-                <div class="app-card">
-                    <div class="app-card-icon">📧</div>
-                    <div class="app-card-title">Почта</div>
-                    <div class="app-card-desc">Управляй почтой везде</div>
-                    <div class="app-links">
-                        <a href="https://apps.apple.com" target="_blank" rel="noopener" class="app-link">iOS</a>
-                        <a href="https://play.google.com" target="_blank" rel="noopener" class="app-link">Android</a>
-                    </div>
-                </div>
-                <div class="app-card">
-                    <div class="app-card-icon">📅</div>
-                    <div class="app-card-title">Календарь</div>
-                    <div class="app-card-desc">Планируй встречи</div>
-                    <div class="app-links">
-                        <a href="https://apps.apple.com" target="_blank" rel="noopener" class="app-link">iOS</a>
-                        <a href="https://play.google.com" target="_blank" rel="noopener" class="app-link">Android</a>
-                    </div>
-                </div>
-                <div class="app-card">
-                    <div class="app-card-icon">☁️</div>
-                    <div class="app-card-title">Диск</div>
-                    <div class="app-card-desc">Облако для файлов</div>
-                    <div class="app-links">
-                        <a href="https://apps.apple.com" target="_blank" rel="noopener" class="app-link">iOS</a>
-                        <a href="https://play.google.com" target="_blank" rel="noopener" class="app-link">Android</a>
-                    </div>
-                </div>
+            <div class="download-apps-grid" id="download-apps-grid">
+                <!-- Заполнено JS -->
             </div>
         </div>
+    </div>
+
+    <!-- Apps Editor Modal -->
+    <div class="apps-editor-overlay" id="apps-editor-overlay"></div>
+    <div class="apps-editor-modal" id="apps-editor-modal">
+        <h3>Редактор приложений</h3>
+        <div id="apps-editor-content"></div>
+        <button class="admin-btn" id="save-apps" style="margin-top: 16px;">Сохранить</button>
     </div>
 
     <div class="hero-products">
@@ -1854,6 +1984,57 @@
         updateProgressPersonalized();
     }
 
+    // ==================== CAT MASCOT DRAGGING ====================
+    const catMascot = document.getElementById('cat-mascot');
+    let isDraggingCat = false;
+    let catStartX, catStartY;
+    let catOffsetX, catOffsetY;
+
+    // Load saved cat position
+    function loadCatPosition() {
+        const saved = localStorage.getItem('cat-position');
+        if (saved) {
+            const pos = JSON.parse(saved);
+            catMascot.style.left = pos.left + 'px';
+            catMascot.style.bottom = pos.bottom + 'px';
+        }
+    }
+    loadCatPosition();
+
+    catMascot.addEventListener('mousedown', (e) => {
+        isDraggingCat = true;
+        catMascot.classList.add('dragging');
+        catStartX = e.clientX;
+        catStartY = e.clientY;
+        catOffsetX = catMascot.offsetLeft;
+        catOffsetY = window.innerHeight - catMascot.offsetTop - catMascot.offsetHeight;
+        e.preventDefault();
+    });
+
+    document.addEventListener('mousemove', (e) => {
+        if (!isDraggingCat) return;
+
+        const deltaX = e.clientX - catStartX;
+        const deltaY = e.clientY - catStartY;
+
+        let newLeft = Math.max(0, Math.min(window.innerWidth - catMascot.offsetWidth, catOffsetX + deltaX));
+        let newBottom = Math.max(0, Math.min(window.innerHeight - catMascot.offsetHeight, catOffsetY - deltaY));
+
+        catMascot.style.left = newLeft + 'px';
+        catMascot.style.bottom = newBottom + 'px';
+    });
+
+    document.addEventListener('mouseup', () => {
+        if (isDraggingCat) {
+            isDraggingCat = false;
+            catMascot.classList.remove('dragging');
+            localStorage.setItem('cat-position', JSON.stringify({
+                left: parseInt(catMascot.style.left),
+                bottom: parseInt(catMascot.style.bottom)
+            }));
+        }
+    });
+
     // ==================== DOWNLOAD APPS ====================
     const downloadHeader = document.getElementById('download-apps-header');
     const downloadContent = document.getElementById('download-apps-content');
@@ -1877,6 +2058,130 @@
         }
     });
 
+    // Default apps data
+    const defaultApps = [
+        { icon: '📧', title: 'Почта', desc: 'Управляй почтой везде', stores: [{ name: 'iOS', url: 'https://apps.apple.com' }, { name: 'Android', url: 'https://play.google.com' }] },
+        { icon: '📅', title: 'Календарь', desc: 'Планируй встречи', stores: [{ name: 'iOS', url: 'https://apps.apple.com' }, { name: 'Android', url: 'https://play.google.com' }] },
+        { icon: '☁️', title: 'Диск', desc: 'Облако для файлов', stores: [{ name: 'iOS', url: 'https://apps.apple.com' }, { name: 'Android', url: 'https://play.google.com' }] }
+    ];
+
+    function getAppsData() {
+        const saved = localStorage.getItem('apps-data');
+        return saved ? JSON.parse(saved) : defaultApps;
+    }
+
+    function renderApps() {
+        const grid = document.getElementById('download-apps-grid');
+        const apps = getAppsData();
+        grid.innerHTML = '';
+
+        apps.forEach((app, idx) => {
+            const card = document.createElement('div');
+            card.className = 'app-card';
+            const storesHtml = app.stores.map(s => `<a href="${s.url}" target="_blank" rel="noopener" class="app-link">${s.name}</a>`).join('');
+            card.innerHTML = `
+                <div class="app-card-icon">${app.icon}</div>
+                <div class="app-card-title">${app.title}</div>
+                <div class="app-card-desc">${app.desc}</div>
+                <div class="app-links">${storesHtml}</div>
+            `;
+            grid.appendChild(card);
+        });
+    }
+
+    // Initial render
+    renderApps();
+
+    // Apps Editor
+    function openAppsEditor() {
+        const modal = document.getElementById('apps-editor-modal');
+        const overlay = document.getElementById('apps-editor-overlay');
+        const content = document.getElementById('apps-editor-content');
+        const apps = getAppsData();
+
+        content.innerHTML = apps.map((app, idx) => `
+            <div class="app-edit-item">
+                <div class="app-edit-field">
+                    <label>Эмодзи</label>
+                    <input type="text" class="app-icon-input" data-idx="${idx}" value="${app.icon}" maxlength="2">
+                </div>
+                <div class="app-edit-field">
+                    <label>Название</label>
+                    <input type="text" class="app-title-input" data-idx="${idx}" value="${app.title}">
+                </div>
+                <div class="app-edit-field">
+                    <label>Описание</label>
+                    <input type="text" class="app-desc-input" data-idx="${idx}" value="${app.desc}">
+                </div>
+                <div class="app-stores">
+                    <label style="display: block; margin-bottom: 8px; font-size: 12px; font-weight: 600;">Сторы</label>
+                    <div class="app-stores-list" data-idx="${idx}">
+                        ${app.stores.map((s, sIdx) => `
+                            <div class="app-store-item">
+                                <input type="text" placeholder="Название" value="${s.name}" class="store-name" data-idx="${idx}" data-sidx="${sIdx}">
+                                <input type="text" placeholder="URL" value="${s.url}" class="store-url" data-idx="${idx}" data-sidx="${sIdx}" style="flex: 2;">
+                                <button class="delete-store" data-idx="${idx}" data-sidx="${sIdx}">🗑️</button>
+                            </div>
+                        `).join('')}
+                    </div>
+                    <button class="app-add-store" data-idx="${idx}">+ Добавить стор</button>
+                </div>
+            </div>
+        `).join('');
+
+        overlay.classList.add('show');
+        modal.classList.add('show');
+
+        // Listeners
+        content.querySelectorAll('.delete-store').forEach(btn => {
+            btn.addEventListener('click', (e) => {
+                e.preventDefault();
+                const idx = btn.dataset.idx;
+                const sIdx = btn.dataset.sidx;
+                apps[idx].stores.splice(sIdx, 1);
+                openAppsEditor();
+            });
+        });
+
+        content.querySelectorAll('.app-add-store').forEach(btn => {
+            btn.addEventListener('click', (e) => {
+                e.preventDefault();
+                const idx = btn.dataset.idx;
+                apps[idx].stores.push({ name: '', url: '' });
+                openAppsEditor();
+            });
+        });
+    }
+
+    document.getElementById('save-apps').addEventListener('click', () => {
+        const content = document.getElementById('apps-editor-content');
+        const apps = getAppsData();
+
+        content.querySelectorAll('.app-edit-item').forEach((item, idx) => {
+            apps[idx].icon = item.querySelector('.app-icon-input').value;
+            apps[idx].title = item.querySelector('.app-title-input').value;
+            apps[idx].desc = item.querySelector('.app-desc-input').value;
+
+            apps[idx].stores = [];
+            item.querySelectorAll('.app-store-item').forEach(storeItem => {
+                apps[idx].stores.push({
+                    name: storeItem.querySelector('.store-name').value,
+                    url: storeItem.querySelector('.store-url').value
+                });
+            });
+        });
+
+        localStorage.setItem('apps-data', JSON.stringify(apps));
+        document.getElementById('apps-editor-modal').classList.remove('show');
+        document.getElementById('apps-editor-overlay').classList.remove('show');
+        renderApps();
+    });
+
+    document.getElementById('apps-editor-overlay').addEventListener('click', () => {
+        document.getElementById('apps-editor-modal').classList.remove('show');
+        document.getElementById('apps-editor-overlay').classList.remove('show');
+    });
+
     // Admin tabs
     const tabButtons = document.querySelectorAll('.admin-tab-btn');
     const tabContents = document.querySelectorAll('.admin-tab-content');
@@ -1895,6 +2200,9 @@
     });
 
     // ==================== CONTENT EDITOR ====================
+    let currentEditElement = null;
+    let currentEditIndex = null;
+
     function populateContentEditor() {
         const editor = document.getElementById('content-editor');
         editor.innerHTML = '';
@@ -1908,40 +2216,122 @@
             editDiv.className = 'edit-section';
 
             const titleText = title ? title.innerText : 'Секция ' + idx;
-            const descText = desc ? desc.innerText : '';
+            const descText = desc ? desc.innerHTML : '';
 
             editDiv.innerHTML = `
                 <div class="edit-section-title">${titleText}</div>
-                <textarea data-section="${idx}" data-type="desc">${descText}</textarea>
+                <div class="edit-toolbar">
+                    <button class="edit-btn" data-action="bold" data-idx="${idx}"><strong>B</strong></button>
+                    <button class="edit-btn" data-action="italic" data-idx="${idx}"><em>I</em></button>
+                    <button class="edit-btn" data-action="link" data-idx="${idx}">🔗 Ссылка</button>
+                    <button class="edit-btn" data-action="clear" data-idx="${idx}">❌ Очистить</button>
+                </div>
+                <div class="edit-section-content" data-section="${idx}" contenteditable="true">${descText}</div>
             `;
 
             editor.appendChild(editDiv);
         });
+
+        // Attach toolbar listeners
+        editor.querySelectorAll('.edit-btn').forEach(btn => {
+            btn.addEventListener('click', () => {
+                const action = btn.dataset.action;
+                const idx = btn.dataset.idx;
+                const contentEl = editor.querySelector(`[data-section="${idx}"]`);
+
+                if (action === 'bold') {
+                    document.execCommand('bold', false, null);
+                    contentEl.focus();
+                } else if (action === 'italic') {
+                    document.execCommand('italic', false, null);
+                    contentEl.focus();
+                } else if (action === 'link') {
+                    openLinkDialog(idx);
+                } else if (action === 'clear') {
+                    contentEl.innerHTML = '';
+                }
+            });
+        });
     }
 
+    function openLinkDialog(idx) {
+        const editor = document.getElementById('content-editor');
+        const contentEl = editor.querySelector(`[data-section="${idx}"]`);
+        const selection = window.getSelection();
+        const selectedText = selection.toString();
+
+        if (!selectedText) {
+            alert('Выдели текст перед тем как добавлять ссылку');
+            return;
+        }
+
+        currentEditIndex = idx;
+        document.getElementById('link-text-preview').textContent = selectedText;
+        document.getElementById('link-url').value = '';
+        document.getElementById('link-overlay').classList.add('show');
+        document.getElementById('link-dialog').classList.add('show');
+        document.getElementById('link-url').focus();
+    }
+
+    document.getElementById('link-confirm').addEventListener('click', () => {
+        const url = document.getElementById('link-url').value.trim();
+        if (!url) {
+            alert('Укажи URL');
+            return;
+        }
+
+        const selection = window.getSelection();
+        if (!selection.rangeCount) return;
+
+        const range = selection.getRangeAt(0);
+        const link = document.createElement('a');
+        link.href = url;
+        link.target = '_blank';
+        link.style.color = 'var(--primary-light)';
+        link.style.textDecoration = 'underline';
+        range.surroundContents(link);
+
+        document.getElementById('link-overlay').classList.remove('show');
+        document.getElementById('link-dialog').classList.remove('show');
+    });
+
+    document.getElementById('link-cancel').addEventListener('click', () => {
+        document.getElementById('link-overlay').classList.remove('show');
+        document.getElementById('link-dialog').classList.remove('show');
+    });
+
+    document.getElementById('link-overlay').addEventListener('click', () => {
+        document.getElementById('link-overlay').classList.remove('show');
+        document.getElementById('link-dialog').classList.remove('show');
+    });
+
     document.getElementById('save-content').addEventListener('click', () => {
-        const textareas = document.querySelectorAll('#content-editor textarea');
-        textareas.forEach(ta => {
-            const idx = ta.dataset.section;
-            const sections = document.querySelectorAll('.section');
+        const editor = document.getElementById('content-editor');
+        const contentEls = editor.querySelectorAll('[data-section]');
+        const sections = document.querySelectorAll('.section');
+
+        contentEls.forEach(el => {
+            const idx = el.dataset.section;
             if (sections[idx]) {
                 const descEl = sections[idx].querySelector('.section-desc');
-                if (descEl) descEl.innerText = ta.value;
+                if (descEl) {
+                    descEl.innerHTML = el.innerHTML;
+                }
             }
         });
 
         // Feedback
         const btn = document.getElementById('save-content');
         const origText = btn.innerText;
-        btn.innerText = 'Сохранено!';
+        btn.innerText = '✅ Сохранено!';
         setTimeout(() => btn.innerText = origText, 2000);
 
         // Store in localStorage
         localStorage.setItem('onboarding-content-changes', JSON.stringify({
             timestamp: Date.now(),
-            changes: Array.from(textareas).map(ta => ({
-                section: ta.dataset.section,
-                content: ta.value
+            changes: Array.from(contentEls).map(el => ({
+                section: el.dataset.section,
+                content: el.innerHTML
             }))
         }));
     });
@@ -1959,13 +2349,15 @@
             const itemDiv = document.createElement('div');
             itemDiv.className = 'section-item';
             itemDiv.innerHTML = `
-                <div class="section-item-drag">≡</div>
+                <div class="section-item-order">
+                    <button class="section-order-btn" data-action="up" data-idx="${idx}" ${idx === 0 ? 'disabled' : ''} title="Выше">▲</button>
+                    <button class="section-order-btn" data-action="down" data-idx="${idx}" ${idx === sections.length - 1 ? 'disabled' : ''} title="Ниже">▼</button>
+                </div>
                 <div class="section-item-info">
-                    <div class="section-item-name">${title ? title.innerText : 'Секция ' + idx}</div>
+                    <div class="section-item-name">${idx + 1}. ${title ? title.innerText : 'Секция'}</div>
                     <div class="section-item-count">${items} пунктов</div>
                 </div>
                 <div class="section-item-actions">
-                    <button class="section-btn" data-action="edit" data-idx="${idx}" title="Редактировать">✏️</button>
                     <button class="section-btn" data-action="delete" data-idx="${idx}" title="Удалить">🗑️</button>
                 </div>
             `;
@@ -1974,15 +2366,27 @@
         });
 
         // Add event listeners
-        manager.querySelectorAll('.section-btn').forEach(btn => {
+        manager.querySelectorAll('.section-order-btn').forEach(btn => {
             btn.addEventListener('click', () => {
                 const action = btn.dataset.action;
+                const idx = parseInt(btn.dataset.idx);
+                const sections = document.querySelectorAll('.section');
+
+                if (action === 'up' && idx > 0) {
+                    sections[idx].parentNode.insertBefore(sections[idx], sections[idx - 1]);
+                } else if (action === 'down' && idx < sections.length - 1) {
+                    sections[idx].parentNode.insertBefore(sections[idx + 1], sections[idx]);
+                }
+                populateSectionManager();
+            });
+        });
+
+        manager.querySelectorAll('[data-action="delete"]').forEach(btn => {
+            btn.addEventListener('click', () => {
                 const idx = btn.dataset.idx;
-                if (action === 'delete') {
-                    if (confirm('Удалить эту секцию?')) {
-                        document.querySelectorAll('.section')[idx].remove();
-                        populateSectionManager();
-                    }
+                if (confirm('Удалить эту секцию?')) {
+                    document.querySelectorAll('.section')[idx].remove();
+                    populateSectionManager();
                 }
             });
         });
