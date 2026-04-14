@@ -1230,6 +1230,10 @@
             <input type="text" id="admin-lead" placeholder="Например: Алексей Петров">
         </div>
         <div class="admin-field">
+            <label>Контакт руководителя (ссылка)</label>
+            <input type="text" id="admin-lead-link" placeholder="Например: https://t.me/username">
+        </div>
+        <div class="admin-field">
             <label>Роль / должность</label>
             <input type="text" id="admin-role" placeholder="Например: Frontend-разработчик">
         </div>
@@ -1959,6 +1963,7 @@
     const personName = params.get('name');
     const personTeam = params.get('team');
     const personLead = params.get('lead');
+    const personLeadLink = params.get('leadLink');
     const personRole = params.get('role');
     const hiddenParam = params.get('hidden');
     const hiddenSections = hiddenParam ? hiddenParam.split(',') : [];
@@ -1985,10 +1990,15 @@
             'Привет, <span class="person-name">' + personName + '</span>!<br>';
         document.getElementById('hero-default-title').textContent = 'Твой путь в ';
 
-        // Personalize subtitle
+        // Personalize subtitle (adaptive to provided fields)
         let subtitle = 'Добро пожаловать';
-        if (personRole) subtitle += ', <span class="person-name">' + personRole + '</span>';
-        if (personTeam) subtitle += ' команды <span class="person-team">' + personTeam + '</span>';
+        if (personRole && personTeam) {
+            subtitle += ', <span class="person-name">' + personRole + '</span> команды <span class="person-team">' + personTeam + '</span>';
+        } else if (personRole) {
+            subtitle += ', <span class="person-name">' + personRole + '</span>';
+        } else if (personTeam) {
+            subtitle += ' в команду <span class="person-team">' + personTeam + '</span>';
+        }
         subtitle += '! Этот чек-лист поможет тебе ничего не забыть и быстро влиться в команду.';
         document.getElementById('hero-subtitle').innerHTML = subtitle;
 
@@ -2005,20 +2015,19 @@
         if (personLead) {
             const coordInfo = document.querySelector('.coordinator-info p');
             if (coordInfo) {
-                coordInfo.innerHTML = coordInfo.innerHTML + '<br>Твой руководитель: <strong>' + personLead + '</strong>';
+                let leadHtml = '<strong>' + personLead + '</strong>';
+                if (personLeadLink) {
+                    leadHtml = '<a href="' + personLeadLink + '" target="_blank" rel="noopener" style="color: var(--primary-light); text-decoration: underline;">' + personLead + '</a>';
+                }
+                coordInfo.innerHTML = coordInfo.innerHTML + '<br>Твой руководитель: ' + leadHtml;
             }
         }
 
-        // Hide contact links and admin panel in personalized mode
-        const contactLinks = document.querySelector('.coordinator-info > div[style*="margin-top"]');
-        if (contactLinks) {
-            contactLinks.style.display = 'none';
-        }
-
-        const adminToggle = document.getElementById('admin-toggle');
-        const adminPanel = document.getElementById('admin-panel');
-        if (adminToggle) adminToggle.style.display = 'none';
-        if (adminPanel) adminPanel.style.display = 'none';
+        // Hide admin panel in personalized mode (keep coordinator contact visible)
+        const adminToggleEl = document.getElementById('admin-toggle');
+        const adminPanelEl = document.getElementById('admin-panel');
+        if (adminToggleEl) adminToggleEl.style.display = 'none';
+        if (adminPanelEl) adminPanelEl.style.display = 'none';
 
         // Unique storage key per person so progress doesn't mix
         const personKey = 'onboarding-' + personName.toLowerCase().replace(/\s+/g, '-');
@@ -2681,6 +2690,7 @@
         const name = document.getElementById('admin-name').value.trim();
         const team = document.getElementById('admin-team').value.trim();
         const lead = document.getElementById('admin-lead').value.trim();
+        const leadLink = document.getElementById('admin-lead-link').value.trim();
         const role = document.getElementById('admin-role').value.trim();
 
         if (!name) {
@@ -2694,6 +2704,7 @@
         p.set('name', name);
         if (team) p.set('team', team);
         if (lead) p.set('lead', lead);
+        if (leadLink) p.set('leadLink', leadLink);
         if (role) p.set('role', role);
 
         // Collect hidden sections
