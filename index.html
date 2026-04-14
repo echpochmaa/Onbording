@@ -828,7 +828,8 @@
 
         .app-links {
             display: flex; gap: 8px; flex-wrap: nowrap; justify-content: center;
-            width: 100%;
+            width: 100%; align-items: flex-start;
+            min-height: 62px; align-content: flex-start;
         }
 
         .app-link {
@@ -844,6 +845,7 @@
 
         .app-card-disk .app-links {
             display: grid; grid-template-columns: 1fr 1fr; gap: 8px;
+            min-height: auto;
         }
 
         .app-card-disk .app-link {
@@ -2006,6 +2008,9 @@
                 if (divider && divider.classList.contains('divider')) {
                     divider.classList.add('hidden');
                 }
+                // Hide corresponding side-nav item
+                const navBtn = document.querySelector(`.side-nav-item[onclick="scrollToSection('${sectionId}')"]`);
+                if (navBtn) navBtn.style.display = 'none';
             }
         });
     }
