@@ -1700,7 +1700,7 @@
                     All Hands
                     <span class="meeting-tooltip">
                         <span class="meeting-tooltip-icon">ℹ️</span>
-                        <span class="meeting-tooltip-content">Встреча где делимся успехами и достижениями</span>
+                        <span class="meeting-tooltip-content">Раз в месяц встречаемся всей командой, чтобы обсудить наш прогресс, достижения и провести неформально время в офисе</span>
                     </span>
                 </h4>
                 <div class="meeting-meta">
@@ -1713,7 +1713,7 @@
 
         <div class="info-block" style="margin-left: 64px; margin-top: 24px;">
             <div class="info-block-title">&#128204; Встречи внутри команды</div>
-            <p>Дейлики, планирования, ретро, 1-1 — в эти встречи тебя добавит <strong>твой руководитель</strong>. Если не видишь регулярную встречу в календаре — просто напомни ему.</p>
+            <p>Дейлики, планирования, ретро, 1-1 — в эти встречи тебя добавит <strong data-personalized-lead>твой руководитель</strong>. Если не видишь регулярную встречу в календаре — просто напомни ему.</p>
         </div>
 
         <div class="section-progress" style="margin-top: 24px;">
@@ -2081,6 +2081,16 @@
             showBubble('Привет, ' + personName + '!', 4000);
             animateCat('bounce');
         }, 1500);
+
+        // Personalize "твой руководитель" inline mentions
+        if (personLead) {
+            document.querySelectorAll('[data-personalized-lead]').forEach(el => {
+                const safeName = personLead;
+                el.innerHTML = personLeadLink
+                    ? '<a href="' + personLeadLink + '" target="_blank" rel="noopener">' + safeName + '</a>'
+                    : safeName;
+            });
+        }
 
         // Personalize coordinator text with lead name
         if (personLead) {
