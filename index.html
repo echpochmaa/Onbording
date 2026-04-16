@@ -777,12 +777,11 @@
 
         /* Quick Start Banner */
         .quickstart-banner {
-            display: none; margin: 32px auto 32px; padding: 32px;
+            display: none; margin: 32px 0 32px 64px; padding: 32px;
             background: var(--bg-card);
             border: 1px solid rgba(79, 110, 247, 0.25);
             border-radius: 20px; position: relative; overflow: hidden;
             transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
-            max-width: 900px;
             animation: qsBannerIn 0.8s ease-out both;
         }
         @keyframes qsBannerIn {
@@ -847,6 +846,7 @@
         .quickstart-banner-btn:hover svg { transform: translateX(4px); }
 
         @media (max-width: 768px) {
+            .quickstart-banner { margin-left: 0; }
             .quickstart-banner-content { flex-direction: column; text-align: center; }
         }
 
@@ -1887,10 +1887,9 @@
             <label class="check-item"><div class="check-box"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="M5 13l4 4L19 7"/></svg></div>
                 <span class="check-text">Добавлен во все командные встречи (дейлики, планирования, ретро, 1-1)</span></label>
         </div>
-    </section>
 
-    <!-- Quick Start Banner -->
-    <div class="quickstart-banner" id="quickstart-banner">
+        <!-- Quick Start Banner -->
+        <div class="quickstart-banner" id="quickstart-banner">
         <div class="quickstart-banner-glow"></div>
         <div class="quickstart-banner-content">
             <div class="quickstart-banner-icon">
@@ -1906,6 +1905,7 @@
             </div>
         </div>
     </div>
+    </section>
 
     <!-- Footer -->
     <footer class="footer">
@@ -1961,7 +1961,7 @@
         mail: ['GitLab покоряется!', 'Доступы — сила!', 'Контуры больше не секрет!'],
         access: ['Ещё один ключик получен!', 'Двери открываются!', 'Круто, доступ есть!'],
         analytics: ['Дашборды ждут!', 'Метрики — наше всё!', 'Теперь видно всё!'],
-        team: ['Знакомства — лучшая часть!', 'Команда станет семьёй!', 'Ещё один коллега в копилке!'],
+        team: ['Знакомства — лучшая часть!'],
         product: ['Roadmap осваивается!', 'Стратегия прояснилась!', 'Теперь знаешь куда плывём!'],
         chat: ['Чаты подключены!', 'Теперь в курсе всего!', 'Общение — двигатель прогресса!'],
         meetings: ['Календарь растёт!', 'Не проспи дейли!', 'Встречи — тоже работа!']
@@ -2258,13 +2258,12 @@
     if (quickstartParam === '1') {
         const banner = document.getElementById('quickstart-banner');
         banner.classList.add('show');
-        // Build quickstart link with role pre-selected
+        // Build quickstart link with role pre-selected + back URL
         const qsLink = document.getElementById('quickstart-link');
-        let qsUrl = 'quickstart.html';
-        if (quickstartRole) {
-            qsUrl += '?role=' + encodeURIComponent(quickstartRole);
-        }
-        qsLink.href = qsUrl;
+        const qsParams = new URLSearchParams();
+        if (quickstartRole) qsParams.set('role', quickstartRole);
+        qsParams.set('back', window.location.href);
+        qsLink.href = 'quickstart.html?' + qsParams.toString();
     }
 
     if (personName) {

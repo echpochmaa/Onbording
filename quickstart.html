@@ -1286,8 +1286,15 @@ document.querySelectorAll('.check-item').forEach(item => {
 });
 updateProgress();
 
-// Auto-select role from URL param
+// Handle back link — restore personalized URL
 const urlParams = new URLSearchParams(window.location.search);
+const backUrl = urlParams.get('back');
+if (backUrl) {
+    const backLink = document.querySelector('.back-link');
+    if (backLink) backLink.href = backUrl;
+}
+
+// Auto-select role from URL param
 const roleParam = urlParams.get('role');
 if (roleParam) {
     const tab = document.querySelector('.role-tab[data-role="' + roleParam + '"]');
