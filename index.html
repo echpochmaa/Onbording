@@ -742,6 +742,89 @@
         }
         .admin-copied.show { opacity: 1; }
 
+        /* Toggle switch */
+        .admin-switch {
+            display: flex; align-items: center; justify-content: space-between;
+            padding: 14px 16px; background: var(--surface);
+            border: 1px solid var(--border); border-radius: 12px;
+            margin-bottom: 16px; cursor: pointer; user-select: none;
+            transition: border-color 0.3s;
+        }
+        .admin-switch:hover { border-color: var(--primary); }
+        .admin-switch-label {
+            font-size: 14px; font-weight: 500; color: var(--text);
+            display: flex; flex-direction: column; gap: 2px;
+        }
+        .admin-switch-label small {
+            font-size: 12px; color: var(--text-dim); font-weight: 400;
+        }
+        .admin-switch-track {
+            width: 44px; height: 24px; border-radius: 12px;
+            background: var(--border); position: relative;
+            transition: background 0.3s; flex-shrink: 0;
+        }
+        .admin-switch-track::after {
+            content: ''; position: absolute; top: 2px; left: 2px;
+            width: 20px; height: 20px; border-radius: 50%;
+            background: #fff; transition: transform 0.3s;
+        }
+        .admin-switch.active .admin-switch-track {
+            background: var(--primary);
+        }
+        .admin-switch.active .admin-switch-track::after {
+            transform: translateX(20px);
+        }
+
+        /* Quick Start Banner */
+        .quickstart-banner {
+            display: none; margin: 0 0 32px; padding: 32px;
+            background: var(--bg-card);
+            border: 1px solid rgba(79, 110, 247, 0.25);
+            border-radius: 20px; position: relative; overflow: hidden;
+            transition: all 0.3s ease;
+        }
+        .quickstart-banner:hover {
+            border-color: var(--primary);
+            box-shadow: 0 8px 40px rgba(79, 110, 247, 0.15);
+            transform: translateY(-2px);
+        }
+        .quickstart-banner.show { display: block; }
+        .quickstart-banner-glow {
+            position: absolute; top: -50%; right: -20%;
+            width: 300px; height: 300px; border-radius: 50%;
+            background: radial-gradient(circle, rgba(79,110,247,0.12) 0%, transparent 70%);
+            pointer-events: none;
+        }
+        .quickstart-banner-content {
+            position: relative; z-index: 1;
+            display: flex; align-items: center; gap: 24px;
+        }
+        .quickstart-banner-icon {
+            width: 56px; height: 56px; border-radius: 16px;
+            background: var(--mail-gradient); display: flex;
+            align-items: center; justify-content: center;
+            font-size: 28px; flex-shrink: 0;
+        }
+        .quickstart-banner-text h3 {
+            font-size: 18px; font-weight: 700; margin-bottom: 4px;
+        }
+        .quickstart-banner-text p {
+            font-size: 14px; color: var(--text-muted); margin-bottom: 12px;
+        }
+        .quickstart-banner-btn {
+            display: inline-flex; align-items: center; gap: 8px;
+            padding: 10px 24px; background: var(--mail-gradient);
+            border: none; border-radius: 12px; color: #fff;
+            font-size: 14px; font-weight: 600; cursor: pointer;
+            text-decoration: none; transition: all 0.2s ease;
+        }
+        .quickstart-banner-btn:hover { transform: scale(1.03); box-shadow: 0 4px 20px rgba(79,110,247,0.4); }
+        .quickstart-banner-btn svg { width: 16px; height: 16px; }
+
+        @media (max-width: 768px) {
+            .quickstart-banner-content { flex-direction: column; text-align: center; }
+        }
+
         /* Personalized name highlight */
         .person-name {
             color: var(--primary-light); font-weight: 600;
@@ -1244,6 +1327,24 @@
             <input type="text" id="admin-role" placeholder="Например: Frontend-разработчик">
         </div>
 
+        <div class="admin-switch" id="admin-quickstart-toggle">
+            <div class="admin-switch-label">
+                Quick Start
+                <small>Добавить переход на техническое онбординг-руководство</small>
+            </div>
+            <div class="admin-switch-track"></div>
+        </div>
+
+        <div class="admin-field" id="admin-quickstart-role-field" style="display: none;">
+            <label>Роль в Quick Start</label>
+            <select id="admin-quickstart-role">
+                <option value="">Не выбрана (общая)</option>
+                <option value="dev">Разработчик</option>
+                <option value="devops">DevOps</option>
+                <option value="qa">QA</option>
+            </select>
+        </div>
+
         <div class="admin-field">
             <label style="font-weight: 600; margin-bottom: 10px; display: block;">Какие блоки показывать:</label>
             <div class="blocks-visibility" id="blocks-visibility">
@@ -1728,6 +1829,22 @@
         </div>
     </section>
 
+    <!-- Quick Start Banner -->
+    <div class="quickstart-banner" id="quickstart-banner">
+        <div class="quickstart-banner-glow"></div>
+        <div class="quickstart-banner-content">
+            <div class="quickstart-banner-icon">&#128640;</div>
+            <div class="quickstart-banner-text">
+                <h3>Технический Quick Start</h3>
+                <p>Доступы, репозитории, стандарты кода, архитектура и мониторинг — всё для быстрого старта в разработке</p>
+                <a class="quickstart-banner-btn" id="quickstart-link" href="quickstart.html" target="_blank">
+                    Перейти к Quick Start
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+                </a>
+            </div>
+        </div>
+    </div>
+
     <!-- Footer -->
     <footer class="footer">
         <div class="products">
@@ -2035,6 +2152,21 @@
                 if (navBtn) navBtn.style.display = 'none';
             }
         });
+    }
+
+    // Quick Start banner
+    const quickstartParam = params.get('quickstart');
+    const quickstartRole = params.get('qsrole');
+    if (quickstartParam === '1') {
+        const banner = document.getElementById('quickstart-banner');
+        banner.classList.add('show');
+        // Build quickstart link with role pre-selected
+        const qsLink = document.getElementById('quickstart-link');
+        let qsUrl = 'quickstart.html';
+        if (quickstartRole) {
+            qsUrl += '?role=' + encodeURIComponent(quickstartRole);
+        }
+        qsLink.href = qsUrl;
     }
 
     if (personName) {
@@ -2847,6 +2979,14 @@
     }
     populateBlocksVisibility();
 
+    // Quick Start toggle
+    const qsToggle = document.getElementById('admin-quickstart-toggle');
+    const qsRoleField = document.getElementById('admin-quickstart-role-field');
+    qsToggle.addEventListener('click', () => {
+        qsToggle.classList.toggle('active');
+        qsRoleField.style.display = qsToggle.classList.contains('active') ? 'block' : 'none';
+    });
+
     document.getElementById('admin-generate').addEventListener('click', () => {
         const name = document.getElementById('admin-name').value.trim();
         const team = document.getElementById('admin-team').value.trim();
@@ -2878,6 +3018,13 @@
 
         if (hiddenSections.length > 0) {
             p.set('hidden', hiddenSections.join(','));
+        }
+
+        // Quick Start params
+        if (document.getElementById('admin-quickstart-toggle').classList.contains('active')) {
+            p.set('quickstart', '1');
+            const qsRole = document.getElementById('admin-quickstart-role').value;
+            if (qsRole) p.set('qsrole', qsRole);
         }
 
         const url = base + '?' + p.toString();

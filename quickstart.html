@@ -1285,6 +1285,20 @@ document.querySelectorAll('.check-item').forEach(item => {
     });
 });
 updateProgress();
+
+// Auto-select role from URL param
+const urlParams = new URLSearchParams(window.location.search);
+const roleParam = urlParams.get('role');
+if (roleParam) {
+    const tab = document.querySelector('.role-tab[data-role="' + roleParam + '"]');
+    if (tab) {
+        document.querySelectorAll('.role-tab[data-role]').forEach(t => t.classList.remove('active'));
+        document.querySelectorAll('.role-content').forEach(c => c.classList.remove('active'));
+        tab.classList.add('active');
+        const target = document.getElementById('role-' + roleParam);
+        if (target) target.classList.add('active');
+    }
+}
 </script>
 
 </body>
