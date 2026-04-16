@@ -644,7 +644,8 @@
             .cat-svg { width: 60px; height: 60px; }
             .cat-progress-ring { width: 72px; height: 72px; }
             .cat-bubble { font-size: 12px; bottom: 70px; }
-            .download-apps-grid { grid-template-columns: 1fr 1fr; }
+            .download-apps-grid { flex-wrap: wrap; }
+            .app-card-wide { flex: 1 1 100%; }
             .admin-panel { width: calc(100% - 32px); }
         }
 
@@ -908,8 +909,8 @@
         }
 
         .download-apps-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+            display: flex;
+            flex-wrap: nowrap;
             gap: 16px; padding: 24px; margin-top: 12px;
         }
 
@@ -917,6 +918,11 @@
             padding: 24px 16px; background: var(--bg-card); border: 1px solid var(--border);
             border-radius: 12px; transition: all 0.3s ease; text-align: center;
             display: flex; flex-direction: column; align-items: center; justify-content: space-between;
+            flex: 1 1 180px; min-width: 160px;
+        }
+
+        .app-card-wide {
+            flex: 1.8 1 280px; min-width: 260px;
         }
 
         .app-card:hover {
@@ -1342,12 +1348,15 @@
             <input type="text" id="admin-team" placeholder="Например: MAILCORE">
         </div>
         <div class="admin-field">
-            <label>Руководитель</label>
-            <input type="text" id="admin-lead" placeholder="Например: Алексей Петров">
+            <label>Руководитель <span style="color: #EF4444;">*</span></label>
+            <select id="admin-lead-select">
+                <option value="">— Выбери руководителя —</option>
+            </select>
         </div>
         <div class="admin-field">
-            <label>Контакт руководителя (ссылка)</label>
-            <input type="text" id="admin-lead-link" placeholder="Например: https://t.me/username">
+            <label>Дополнительные контакты <span style="color: var(--text-dim); font-weight: 400;">(необязательно)</span></label>
+            <div id="admin-extra-contacts" style="display: flex; flex-direction: column; gap: 8px;"></div>
+            <button type="button" id="add-extra-contact-btn" style="margin-top: 8px; padding: 6px 14px; background: var(--surface); border: 1px dashed var(--border); border-radius: 8px; color: var(--text-muted); font-size: 12px; cursor: pointer; transition: all 0.2s;">+ Добавить контакт</button>
         </div>
         <div class="admin-field">
             <label>Роль / должность</label>
@@ -1897,6 +1906,28 @@
 
 <script>
 (function() {
+    // Contact bank
+    const contactsBank = [
+        { name: 'Антон Савельев', tg: 'https://t.me/savelievant', role: '' },
+        { name: 'Сергей Черняк', tg: 'https://t.me/sergeygox', role: 'Engineering manager домена Altay & Calendar & Platform' },
+        { name: 'Миша Батухтин', tg: 'https://t.me/mishab', role: 'Тимлид Platform' },
+        { name: 'Денис Чистяков', tg: 'https://t.me/Denis_9_9', role: 'Тимлид Docs' },
+        { name: 'Данила Апраксин', tg: 'https://t.me/bub1er', role: 'Engineering manager домена Media & Docs' },
+        { name: 'Ярослав Конов', tg: 'https://t.me/skk_work', role: 'Senior Product Manager домена Media & Docs' },
+        { name: 'Меружан Какосян', tg: 'https://t.me/M_Kakosyan', role: 'Senior Product Manager домена Mail & Feed' },
+        { name: 'Елизавета Трефилова', tg: 'https://t.me/trefilovaliza', role: 'Продакт Media' },
+        { name: 'Евгений Малыхин', tg: 'https://t.me/evmalykhin', role: 'CCO' },
+        { name: 'Федор Кулишов', tg: 'https://t.me/unixorn', role: 'CISO' },
+        { name: 'Евгений Мелешко', tg: 'https://t.me/thebigshake', role: 'Продакт Feed' },
+        { name: 'Миша Беркун', tg: 'https://t.me/mberkun', role: 'CTO' },
+        { name: 'Наталья Варганова', tg: 'https://t.me/Talyrusha', role: 'CFO' },
+        { name: 'Евгения Филаткина', tg: 'https://t.me/Efffgeniya', role: 'HRD' },
+        { name: 'Варя Копылова', tg: 'https://t.me/Vareni4ek', role: 'Лид саппорта' },
+        { name: 'Оля Рагимова', tg: 'https://t.me/olgaragimova', role: 'Лид UX-ресерча' },
+        { name: 'Федя Кашаев', tg: 'https://t.me/fedormsu', role: 'Лид девопсов' },
+        { name: 'Денис Миронов', tg: 'https://t.me/booblik', role: 'Лид тестировщиков' }
+    ];
+
     const STORAGE_KEY = 'onboarding-checklist-state';
 
     function loadState() {
@@ -2201,7 +2232,10 @@
     const personTeam = params.get('team');
     const personLead = params.get('lead');
     const personLeadLink = params.get('leadLink');
+    const personLeadRole = params.get('leadRole');
     const personRole = params.get('role');
+    let personExtraContacts = [];
+    try { personExtraContacts = JSON.parse(params.get('contacts') || '[]'); } catch(e) {}
     const hiddenParam = params.get('hidden');
     const hiddenSections = hiddenParam ? hiddenParam.split(',') : [];
 
@@ -2304,7 +2338,8 @@
         if (personLead) {
             const coordText = document.getElementById('coord-text');
             if (coordText) {
-                coordText.innerHTML = coordText.innerHTML + '<br>Твой руководитель: <strong>' + personLead + '</strong>';
+                const leadLabel = personLeadRole ? personLeadRole : 'Руководитель';
+                coordText.innerHTML = coordText.innerHTML + '<br>Твой руководитель: <strong>' + personLead + '</strong>' + (personLeadRole ? ' <span style="color: var(--text-dim); font-size: 13px;">(' + personLeadRole + ')</span>' : '');
             }
             // Add lead Telegram button next to coordinator's
             if (personLeadLink) {
@@ -2319,6 +2354,26 @@
                     btnContainer.appendChild(leadBtn);
                 }
             }
+        }
+
+        // Add extra contacts to coordinator banner
+        if (personExtraContacts.length > 0) {
+            const coordText = document.getElementById('coord-text');
+            const btnContainer = document.getElementById('coord-buttons');
+            personExtraContacts.forEach(c => {
+                if (coordText && c.role) {
+                    coordText.innerHTML = coordText.innerHTML + '<br>' + c.role + ': <strong>' + c.name + '</strong>';
+                }
+                if (btnContainer && c.tg) {
+                    const btn = document.createElement('a');
+                    btn.href = c.tg;
+                    btn.target = '_blank';
+                    btn.rel = 'noopener';
+                    btn.style.cssText = 'display: inline-flex; align-items: center; gap: 6px; padding: 8px 14px; background: #0088cc; color: white; border-radius: 8px; text-decoration: none; font-size: 13px; font-weight: 500;';
+                    btn.textContent = '📱 ' + c.name;
+                    btnContainer.appendChild(btn);
+                }
+            });
         }
 
         // Hide admin panel in personalized mode (keep coordinator contact visible)
@@ -2529,7 +2584,7 @@
 
         apps.forEach((app, idx) => {
             const card = document.createElement('div');
-            card.className = 'app-card';
+            card.className = app.stores.length > 2 ? 'app-card app-card-wide' : 'app-card';
             const storesHtml = app.stores.map(s => `<a href="${s.url}" target="_blank" rel="noopener" class="app-link">${s.name}</a>`).join('');
             card.innerHTML = `
                 <div class="app-card-icon">${app.icon}</div>
@@ -3066,6 +3121,48 @@
     }
     populateBlocksVisibility();
 
+    // Populate lead select from contacts bank
+    const leadSelect = document.getElementById('admin-lead-select');
+    contactsBank.forEach((c, i) => {
+        const opt = document.createElement('option');
+        opt.value = i;
+        opt.textContent = c.name + (c.role ? ' — ' + c.role : '');
+        leadSelect.appendChild(opt);
+    });
+
+    // Extra contacts logic
+    const extraContainer = document.getElementById('admin-extra-contacts');
+    document.getElementById('add-extra-contact-btn').addEventListener('click', () => {
+        addExtraContactRow();
+    });
+
+    function addExtraContactRow(selectedIdx) {
+        const row = document.createElement('div');
+        row.style.cssText = 'display: flex; gap: 8px; align-items: center;';
+        const sel = document.createElement('select');
+        sel.className = 'extra-contact-select';
+        sel.style.cssText = 'flex: 1; padding: 8px 12px; border: 1px solid var(--border); border-radius: 8px; background: var(--surface); color: var(--text); font-size: 13px;';
+        const emptyOpt = document.createElement('option');
+        emptyOpt.value = '';
+        emptyOpt.textContent = '— Выбери контакт —';
+        sel.appendChild(emptyOpt);
+        contactsBank.forEach((c, i) => {
+            const opt = document.createElement('option');
+            opt.value = i;
+            opt.textContent = c.name + (c.role ? ' — ' + c.role : '');
+            if (selectedIdx !== undefined && selectedIdx === i) opt.selected = true;
+            sel.appendChild(opt);
+        });
+        const removeBtn = document.createElement('button');
+        removeBtn.type = 'button';
+        removeBtn.textContent = '✕';
+        removeBtn.style.cssText = 'padding: 6px 10px; background: rgba(239,68,68,0.15); border: 1px solid rgba(239,68,68,0.3); border-radius: 8px; color: #EF4444; cursor: pointer; font-size: 14px;';
+        removeBtn.addEventListener('click', () => row.remove());
+        row.appendChild(sel);
+        row.appendChild(removeBtn);
+        extraContainer.appendChild(row);
+    }
+
     // Quick Start toggle
     const qsToggle = document.getElementById('admin-quickstart-toggle');
     const qsRoleField = document.getElementById('admin-quickstart-role-field');
@@ -3077,8 +3174,6 @@
     document.getElementById('admin-generate').addEventListener('click', () => {
         const name = document.getElementById('admin-name').value.trim();
         const team = document.getElementById('admin-team').value.trim();
-        const lead = document.getElementById('admin-lead').value.trim();
-        const leadLink = document.getElementById('admin-lead-link').value.trim();
         const role = document.getElementById('admin-role').value.trim();
 
         if (!name) {
@@ -3087,13 +3182,37 @@
             return;
         }
 
+        // Lead from bank
+        const leadIdx = document.getElementById('admin-lead-select').value;
+        if (!leadIdx) {
+            document.getElementById('admin-lead-select').style.borderColor = '#EF4444';
+            setTimeout(() => document.getElementById('admin-lead-select').style.borderColor = '', 2000);
+            return;
+        }
+        const leadContact = contactsBank[parseInt(leadIdx)];
+
+        // Extra contacts from bank
+        const extraContacts = [];
+        document.querySelectorAll('.extra-contact-select').forEach(sel => {
+            if (sel.value) {
+                const c = contactsBank[parseInt(sel.value)];
+                extraContacts.push(c);
+            }
+        });
+
         const base = window.location.origin + window.location.pathname;
         const p = new URLSearchParams();
         p.set('name', name);
         if (team) p.set('team', team);
-        if (lead) p.set('lead', lead);
-        if (leadLink) p.set('leadLink', leadLink);
+        p.set('lead', leadContact.name);
+        p.set('leadLink', leadContact.tg);
+        if (leadContact.role) p.set('leadRole', leadContact.role);
         if (role) p.set('role', role);
+
+        // Extra contacts as JSON
+        if (extraContacts.length > 0) {
+            p.set('contacts', JSON.stringify(extraContacts.map(c => ({ name: c.name, tg: c.tg, role: c.role }))));
+        }
 
         // Collect hidden sections
         const hiddenSections = [];
