@@ -1357,6 +1357,15 @@
     <h3>Панель координатора</h3>
     <button class="admin-btn" id="edit-apps-btn" style="margin-bottom: 16px; background: linear-gradient(135deg, #14B8A6, #5EEAD4);">📱 Редактировать приложения</button>
 
+    <div style="margin-bottom: 16px; padding: 14px 16px; background: var(--surface); border: 1px solid var(--border); border-radius: 12px;">
+        <label style="display: block; font-size: 13px; font-weight: 500; color: var(--text-muted); margin-bottom: 8px;">Сбросить прогресс</label>
+        <div style="display: flex; gap: 8px;">
+            <input type="text" id="reset-name" placeholder="Имя (как в ссылке)" style="flex: 1; padding: 8px 12px; background: var(--bg-card); border: 1px solid var(--border); border-radius: 8px; color: var(--text); font-size: 13px; font-family: inherit; outline: none;">
+            <button class="admin-btn" id="reset-progress-btn" style="width: auto; margin-top: 0; padding: 8px 16px; font-size: 13px; background: linear-gradient(135deg, #EF4444, #F87171);">Сбросить</button>
+        </div>
+        <div id="reset-result" style="font-size: 12px; margin-top: 6px; display: none;"></div>
+    </div>
+
     <div class="admin-tabs">
         <button class="admin-tab-btn active" data-tab="links">Генератор ссылок</button>
         <button class="admin-tab-btn" data-tab="content">Редактор контента</button>
@@ -2128,11 +2137,16 @@
         updateCatProgress(globalPct);
 
         if (checkedAll === totalAll && totalAll > 0) {
-            setTimeout(() => {
-                spawnCompletionStars();
-                document.getElementById('completion-overlay').classList.add('show');
-                launchConfetti();
-            }, 600);
+            if (!localStorage.getItem('onboarding-completed')) {
+                localStorage.setItem('onboarding-completed', '1');
+                setTimeout(() => {
+                    spawnCompletionStars();
+                    document.getElementById('completion-overlay').classList.add('show');
+                    launchConfetti();
+                }, 600);
+            }
+        } else {
+            localStorage.removeItem('onboarding-completed');
         }
     }
 
@@ -2422,12 +2436,18 @@
             document.getElementById('global-progress-fill').style.width = globalPct + '%';
             document.getElementById('global-progress-text').textContent = globalPct + '%';
             updateCatProgress(globalPct);
+            const completedKey = personKey + '-completed';
             if (checkedAll === totalAll && totalAll > 0) {
-                setTimeout(() => {
-                    spawnCompletionStars();
-                    document.getElementById('completion-overlay').classList.add('show');
-                    launchConfetti();
-                }, 600);
+                if (!localStorage.getItem(completedKey)) {
+                    localStorage.setItem(completedKey, '1');
+                    setTimeout(() => {
+                        spawnCompletionStars();
+                        document.getElementById('completion-overlay').classList.add('show');
+                        launchConfetti();
+                    }, 600);
+                }
+            } else {
+                localStorage.removeItem(completedKey);
             }
         }
         updateProgressPersonalized();
@@ -3155,6 +3175,35 @@
     });
 
     document.getElementById('edit-apps-btn').addEventListener('click', openAppsEditor);
+
+    // Reset progress button
+    document.getElementById('reset-progress-btn').addEventListener('click', () => {
+        const name = document.getElementById('reset-name').value.trim();
+        const resultEl = document.getElementById('reset-result');
+        if (!name) {
+            resultEl.style.display = 'block';
+            resultEl.style.color = '#EF4444';
+            resultEl.textContent = 'Введи имя сотрудника';
+            return;
+        }
+        const personKey = 'onboarding-' + name.toLowerCase().replace(/\s+/g, '-');
+        const completedKey = personKey + '-completed';
+        const hadData = localStorage.getItem(personKey) !== null;
+        localStorage.removeItem(personKey);
+        localStorage.removeItem(completedKey);
+        // Also try the generic key
+        localStorage.removeItem('onboarding-checklist-state');
+        localStorage.removeItem('onboarding-completed');
+        resultEl.style.display = 'block';
+        if (hadData) {
+            resultEl.style.color = '#22C55E';
+            resultEl.textContent = 'Прогресс для «' + name + '» сброшен';
+        } else {
+            resultEl.style.color = 'var(--warning)';
+            resultEl.textContent = 'Данные для «' + name + '» не найдены (возможно уже сброшены)';
+        }
+        setTimeout(() => { resultEl.style.display = 'none'; }, 4000);
+    });
 })();
 </script>
 
