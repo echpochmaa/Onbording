@@ -644,7 +644,7 @@
             .cat-svg { width: 60px; height: 60px; }
             .cat-progress-ring { width: 72px; height: 72px; }
             .cat-bubble { font-size: 12px; bottom: 70px; }
-            .download-apps-grid { grid-template-columns: 1fr; }
+            .download-apps-grid { grid-template-columns: 1fr 1fr; }
             .admin-panel { width: calc(100% - 32px); }
         }
 
@@ -775,57 +775,25 @@
             transform: translateX(20px);
         }
 
-        /* Quick Start Banner */
+        /* Quick Start Banner — same style as coordinator-card */
         .quickstart-banner {
-            display: none; margin: 32px 0 32px 64px; padding: 32px;
-            background: var(--bg-card);
-            border: 1px solid rgba(79, 110, 247, 0.25);
-            border-radius: 20px; position: relative; overflow: hidden;
-            transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+            display: none;
+            background: var(--bg-card); border: 1px solid var(--border);
+            border-radius: 20px; padding: 32px; margin-bottom: 32px;
+            align-items: center; gap: 24px;
+            transition: all 0.3s ease;
             animation: qsBannerIn 0.8s ease-out both;
         }
         @keyframes qsBannerIn {
-            from { opacity: 0; transform: translateY(30px) scale(0.96); }
-            to { opacity: 1; transform: translateY(0) scale(1); }
+            from { opacity: 0; transform: translateY(30px); }
+            to { opacity: 1; transform: translateY(0); }
         }
         .quickstart-banner:hover {
             border-color: var(--primary);
-            box-shadow: 0 8px 48px rgba(79, 110, 247, 0.2);
-            transform: translateY(-3px);
+            box-shadow: 0 8px 40px rgba(79, 110, 247, 0.1);
         }
-        .quickstart-banner.show { display: block; }
-        .quickstart-banner-glow {
-            position: absolute; top: -50%; right: -20%;
-            width: 300px; height: 300px; border-radius: 50%;
-            background: radial-gradient(circle, rgba(79,110,247,0.12) 0%, transparent 70%);
-            pointer-events: none;
-            animation: qsGlow 4s ease-in-out infinite alternate;
-        }
-        @keyframes qsGlow {
-            0% { opacity: 0.6; transform: scale(1); }
-            100% { opacity: 1; transform: scale(1.2); }
-        }
-        .quickstart-banner-content {
-            position: relative; z-index: 1;
-            display: flex; align-items: center; gap: 24px;
-        }
-        .quickstart-banner-icon {
-            width: 56px; height: 56px; border-radius: 16px;
-            background: var(--mail-gradient); display: flex;
-            align-items: center; justify-content: center;
-            flex-shrink: 0;
-            animation: qsIconPulse 2s ease-in-out infinite;
-        }
-        @keyframes qsIconPulse {
-            0%, 100% { box-shadow: 0 0 0 0 rgba(79,110,247,0.4); }
-            50% { box-shadow: 0 0 0 12px rgba(79,110,247,0); }
-        }
-        .quickstart-banner-text h3 {
-            font-size: 18px; font-weight: 700; margin-bottom: 4px;
-        }
-        .quickstart-banner-text p {
-            font-size: 14px; color: var(--text-muted); margin-bottom: 12px;
-        }
+        .quickstart-banner.show { display: flex; }
+
         .quickstart-banner-btn {
             display: inline-flex; align-items: center; gap: 8px;
             padding: 10px 24px; background: var(--mail-gradient);
@@ -846,8 +814,7 @@
         .quickstart-banner-btn:hover svg { transform: translateX(4px); }
 
         @media (max-width: 768px) {
-            .quickstart-banner { margin-left: 0; }
-            .quickstart-banner-content { flex-direction: column; text-align: center; }
+            .quickstart-banner { flex-direction: column; text-align: center; }
         }
 
         /* Enhanced completion overlay */
@@ -941,12 +908,13 @@
         }
 
         .download-apps-grid {
-            display: flex; gap: 16px; padding: 20px; margin-top: 12px;
-            justify-content: center;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+            gap: 16px; padding: 24px; margin-top: 12px;
         }
 
         .app-card {
-            flex: 1 1 0; min-width: 0; max-width: 240px; padding: 20px; background: var(--bg-card); border: 1px solid var(--border);
+            padding: 24px 16px; background: var(--bg-card); border: 1px solid var(--border);
             border-radius: 12px; transition: all 0.3s ease; text-align: center;
             display: flex; flex-direction: column; align-items: center; justify-content: space-between;
         }
@@ -970,29 +938,19 @@
         }
 
         .app-links {
-            display: flex; gap: 8px; flex-wrap: nowrap; justify-content: center;
+            display: flex; gap: 8px; flex-wrap: wrap; justify-content: center;
             width: 100%; align-items: flex-start;
-            min-height: 62px; align-content: flex-start;
         }
 
         .app-link {
-            padding: 6px 12px; background: var(--primary); border-radius: 6px;
+            padding: 6px 14px; background: var(--primary); border-radius: 6px;
             color: white; font-size: 11px; font-weight: 500; text-decoration: none;
             transition: all 0.2s ease; border: 1px solid transparent;
-            text-align: center;
+            text-align: center; white-space: nowrap;
         }
 
         .app-link:hover {
             background: var(--primary-light); transform: scale(1.05);
-        }
-
-        .app-card-disk .app-links {
-            display: grid; grid-template-columns: 1fr 1fr; gap: 8px;
-            min-height: auto;
-        }
-
-        .app-card-disk .app-link {
-            padding: 6px 4px; font-size: 10px; white-space: nowrap;
         }
 
         /* Apps Editor */
@@ -1897,24 +1855,23 @@
                 <span class="check-text">Добавлен во все командные встречи (дейлики, планирования, ретро, 1-1)</span></label>
         </div>
 
-        <!-- Quick Start Banner -->
-        <div class="quickstart-banner" id="quickstart-banner">
-        <div class="quickstart-banner-glow"></div>
-        <div class="quickstart-banner-content">
-            <div class="quickstart-banner-icon">
-                <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/></svg>
-            </div>
-            <div class="quickstart-banner-text">
-                <h3>Технический Quick Start</h3>
-                <p>Доступы, репозитории, стандарты кода, архитектура и мониторинг — всё для быстрого старта в разработке</p>
-                <a class="quickstart-banner-btn" id="quickstart-link" href="quickstart.html">
-                    Перейти к Quick Start
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
-                </a>
-            </div>
+    </section>
+
+    <!-- Quick Start Banner (styled like coordinator card) -->
+    <div class="quickstart-banner" id="quickstart-banner">
+        <div class="coordinator-avatar" style="background: var(--mail-gradient);">
+            <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/></svg>
+        </div>
+        <div class="coordinator-info">
+            <h3>Технический Quick Start</h3>
+            <p style="margin-bottom: 12px;">Доступы, репозитории, стандарты кода, архитектура и мониторинг — всё для быстрого старта в разработке</p>
+            <a class="quickstart-banner-btn" id="quickstart-link" href="quickstart.html">
+                Перейти к Quick Start
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+            </a>
         </div>
     </div>
-    </section>
+    <div class="divider quickstart-divider" id="quickstart-divider" style="display: none;"></div>
 
     <!-- Footer -->
     <footer class="footer">
@@ -2272,6 +2229,7 @@
     if (quickstartParam === '1') {
         const banner = document.getElementById('quickstart-banner');
         banner.classList.add('show');
+        document.getElementById('quickstart-divider').style.display = 'block';
         // Build quickstart link with role pre-selected + back URL
         const qsLink = document.getElementById('quickstart-link');
         const qsParams = new URLSearchParams();
@@ -2571,7 +2529,7 @@
 
         apps.forEach((app, idx) => {
             const card = document.createElement('div');
-            card.className = 'app-card' + (app.title === 'Диск' ? ' app-card-disk' : '');
+            card.className = 'app-card';
             const storesHtml = app.stores.map(s => `<a href="${s.url}" target="_blank" rel="noopener" class="app-link">${s.name}</a>`).join('');
             card.innerHTML = `
                 <div class="app-card-icon">${app.icon}</div>
