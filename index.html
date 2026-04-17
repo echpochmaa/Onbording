@@ -2239,15 +2239,35 @@
 
     // ==================== PERSONALIZATION ====================
     const params = new URLSearchParams(window.location.search);
-    const personName = params.get('name');
-    const personTeam = params.get('team');
-    const personLead = params.get('lead');
-    const personLeadLink = params.get('leadLink');
-    const personLeadRole = params.get('leadRole');
-    const personRole = params.get('role');
+    // Support both short (new) and long (legacy) param names
+    const personName = params.get('n') || params.get('name');
+    const personTeam = params.get('t') || params.get('team');
+    const personRole = params.get('r') || params.get('role');
+
+    // Lead: resolve from bank index (li) or fall back to legacy params
+    const leadBankIdx = params.get('li');
+    let personLead, personLeadLink, personLeadRole;
+    if (leadBankIdx !== null && contactsBank[parseInt(leadBankIdx)]) {
+        const lc = contactsBank[parseInt(leadBankIdx)];
+        personLead = lc.name;
+        personLeadLink = lc.tg;
+        personLeadRole = lc.role;
+    } else {
+        personLead = params.get('lead');
+        personLeadLink = params.get('leadLink');
+        personLeadRole = params.get('leadRole');
+    }
+
+    // Extra contacts: resolve from bank indices (c) or fall back to legacy JSON
     let personExtraContacts = [];
-    try { personExtraContacts = JSON.parse(params.get('contacts') || '[]'); } catch(e) {}
-    const hiddenParam = params.get('hidden');
+    const extraIdxParam = params.get('c');
+    if (extraIdxParam) {
+        personExtraContacts = extraIdxParam.split(',').map(i => contactsBank[parseInt(i)]).filter(Boolean);
+    } else {
+        try { personExtraContacts = JSON.parse(params.get('contacts') || '[]'); } catch(e) {}
+    }
+
+    const hiddenParam = params.get('h') || params.get('hidden');
     const hiddenSections = hiddenParam ? hiddenParam.split(',') : [];
 
     // Hide sections
@@ -2269,8 +2289,8 @@
     }
 
     // Quick Start banner
-    const quickstartParam = params.get('quickstart');
-    const quickstartRole = params.get('qsrole');
+    const quickstartParam = params.get('qs') || params.get('quickstart');
+    const quickstartRole = params.get('qsr') || params.get('qsrole');
     if (quickstartParam === '1') {
         const banner = document.getElementById('quickstart-banner');
         banner.classList.add('show');
@@ -3218,19 +3238,19 @@
             }
         });
 
+        // Extra contact indices
+        const extraIdxs = [];
+        document.querySelectorAll('.extra-contact-select').forEach(sel => {
+            if (sel.value) extraIdxs.push(sel.value);
+        });
+
         const base = window.location.origin + window.location.pathname;
         const p = new URLSearchParams();
-        p.set('name', name);
-        if (team) p.set('team', team);
-        p.set('lead', leadContact.name);
-        p.set('leadLink', leadContact.tg);
-        if (leadContact.role) p.set('leadRole', leadContact.role);
-        if (role) p.set('role', role);
-
-        // Extra contacts as JSON
-        if (extraContacts.length > 0) {
-            p.set('contacts', JSON.stringify(extraContacts.map(c => ({ name: c.name, tg: c.tg, role: c.role }))));
-        }
+        p.set('n', name);
+        if (team) p.set('t', team);
+        p.set('li', leadIdx);
+        if (role) p.set('r', role);
+        if (extraIdxs.length > 0) p.set('c', extraIdxs.join(','));
 
         // Collect hidden sections
         const hiddenSections = [];
@@ -3241,14 +3261,14 @@
         });
 
         if (hiddenSections.length > 0) {
-            p.set('hidden', hiddenSections.join(','));
+            p.set('h', hiddenSections.join(','));
         }
 
         // Quick Start params
         if (document.getElementById('admin-quickstart-toggle').classList.contains('active')) {
-            p.set('quickstart', '1');
+            p.set('qs', '1');
             const qsRole = document.getElementById('admin-quickstart-role').value;
-            if (qsRole) p.set('qsrole', qsRole);
+            if (qsRole) p.set('qsr', qsRole);
         }
 
         const url = base + '?' + p.toString();
