@@ -2593,7 +2593,14 @@
         const apps = getAppsData();
         grid.innerHTML = '';
 
-        apps.forEach((app, idx) => {
+        // Sort: narrow cards first and last, wide (Disk) in the middle
+        const narrow = apps.filter(a => a.stores.length <= 2);
+        const wide = apps.filter(a => a.stores.length > 2);
+        const sorted = narrow.length >= 2
+            ? [narrow[0], ...wide, ...narrow.slice(1)]
+            : [...narrow, ...wide];
+
+        sorted.forEach((app) => {
             const card = document.createElement('div');
             card.className = app.stores.length > 2 ? 'app-card app-card-wide' : 'app-card';
             const storesHtml = app.stores.map(s => `<a href="${s.url}" target="_blank" rel="noopener" class="app-link">${s.name}</a>`).join('');
