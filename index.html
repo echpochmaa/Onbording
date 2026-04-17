@@ -917,12 +917,16 @@
         .app-card {
             padding: 24px 16px; background: var(--bg-card); border: 1px solid var(--border);
             border-radius: 12px; transition: all 0.3s ease; text-align: center;
-            display: flex; flex-direction: column; align-items: center; justify-content: space-between;
+            display: flex; flex-direction: column; align-items: center; justify-content: flex-start;
             flex: 1 1 180px; min-width: 160px;
         }
 
         .app-card-wide {
             flex: 1.8 1 280px; min-width: 260px;
+        }
+
+        .app-card-wide .app-links {
+            display: grid; grid-template-columns: 1fr 1fr; gap: 8px;
         }
 
         .app-card:hover {
@@ -940,7 +944,6 @@
 
         .app-card-desc {
             font-size: 12px; color: var(--text-dim); margin-bottom: 12px; line-height: 1.4;
-            flex: 1;
         }
 
         .app-links {
@@ -2559,15 +2562,6 @@
             ]
         },
         {
-            icon: '📅',
-            title: 'Календарь',
-            desc: 'Планируй встречи',
-            stores: [
-                { name: 'iOS', url: 'https://apps.apple.com/ru/app/%D0%BA%D0%B0%D0%BB%D0%B5%D0%BD%D0%B4%D0%B0%D1%80%D1%8C-%D1%83%D0%BC%D0%BD%D1%8B%D0%B9-%D0%BF%D0%BE%D0%BC%D0%BE%D1%89%D0%BD%D0%B8%D0%BA/id6746786886' },
-                { name: 'Android', url: 'https://www.rustore.ru/catalog/app/com.mcd.superapp' }
-            ]
-        },
-        {
             icon: '☁️',
             title: 'Диск',
             desc: 'Облако для файлов',
@@ -2576,6 +2570,15 @@
                 { name: 'RuStore', url: 'https://www.rustore.ru/catalog/app/com.cloud.disk' },
                 { name: 'Mi App', url: 'https://global.app.mi.com/details?lo=ES&la=ru&id=com.cloud.disk' },
                 { name: 'AppGallery', url: 'https://appgallery.huawei.com/#/app/C107320313' }
+            ]
+        },
+        {
+            icon: '📅',
+            title: 'Календарь',
+            desc: 'Планируй встречи',
+            stores: [
+                { name: 'iOS', url: 'https://apps.apple.com/ru/app/%D0%BA%D0%B0%D0%BB%D0%B5%D0%BD%D0%B4%D0%B0%D1%80%D1%8C-%D1%83%D0%BC%D0%BD%D1%8B%D0%B9-%D0%BF%D0%BE%D0%BC%D0%BE%D1%89%D0%BD%D0%B8%D0%BA/id6746786886' },
+                { name: 'Android', url: 'https://www.rustore.ru/catalog/app/com.mcd.superapp' }
             ]
         }
     ];
