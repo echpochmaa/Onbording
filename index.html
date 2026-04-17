@@ -1908,24 +1908,32 @@
 (function() {
     // Contact bank
     const contactsBank = [
-        { name: 'Антон Савельев', tg: 'https://t.me/savelievant', role: '' },
-        { name: 'Сергей Черняк', tg: 'https://t.me/sergeygox', role: 'Engineering manager домена Altay & Calendar & Platform' },
-        { name: 'Миша Батухтин', tg: 'https://t.me/mishab', role: 'Тимлид Platform' },
-        { name: 'Денис Чистяков', tg: 'https://t.me/Denis_9_9', role: 'Тимлид Docs' },
-        { name: 'Данила Апраксин', tg: 'https://t.me/bub1er', role: 'Engineering manager домена Media & Docs' },
-        { name: 'Ярослав Конов', tg: 'https://t.me/skk_work', role: 'Senior Product Manager домена Media & Docs' },
-        { name: 'Меружан Какосян', tg: 'https://t.me/M_Kakosyan', role: 'Senior Product Manager домена Mail & Feed' },
-        { name: 'Елизавета Трефилова', tg: 'https://t.me/trefilovaliza', role: 'Продакт Media' },
-        { name: 'Евгений Малыхин', tg: 'https://t.me/evmalykhin', role: 'CCO' },
-        { name: 'Федор Кулишов', tg: 'https://t.me/unixorn', role: 'CISO' },
-        { name: 'Евгений Мелешко', tg: 'https://t.me/thebigshake', role: 'Продакт Feed' },
-        { name: 'Миша Беркун', tg: 'https://t.me/mberkun', role: 'CTO' },
-        { name: 'Наталья Варганова', tg: 'https://t.me/Talyrusha', role: 'CFO' },
-        { name: 'Евгения Филаткина', tg: 'https://t.me/Efffgeniya', role: 'HRD' },
-        { name: 'Варя Копылова', tg: 'https://t.me/Vareni4ek', role: 'Лид саппорта' },
-        { name: 'Оля Рагимова', tg: 'https://t.me/olgaragimova', role: 'Лид UX-ресерча' },
-        { name: 'Федя Кашаев', tg: 'https://t.me/fedormsu', role: 'Лид девопсов' },
-        { name: 'Денис Миронов', tg: 'https://t.me/booblik', role: 'Лид тестировщиков' }
+        // C-level
+        { name: 'Дима Белозеров', tg: 'https://t.me/bscamp', role: 'CPO', unit: '' },
+        { name: 'Миша Беркун', tg: 'https://t.me/mberkun', role: 'CTO', unit: '' },
+        { name: 'Евгений Малыхин', tg: 'https://t.me/evmalykhin', role: 'CCO', unit: '' },
+        { name: 'Федор Кулишов', tg: 'https://t.me/unixorn', role: 'CISO', unit: '' },
+        { name: 'Наталья Варганова', tg: 'https://t.me/Talyrusha', role: 'CFO', unit: '' },
+        { name: 'Евгения Филаткина', tg: 'https://t.me/Efffgeniya', role: 'HRD', unit: '' },
+        // MAIL & FEED
+        { name: 'Антон Савельев', tg: 'https://t.me/savelievant', role: 'Engineering Manager / Team Lead of Mail', unit: 'MAIL & FEED' },
+        { name: 'Меружан Какосян', tg: 'https://t.me/M_Kakosyan', role: 'Senior Product Manager / Product Mail', unit: 'MAIL & FEED' },
+        { name: 'Евгений Мелешко', tg: 'https://t.me/thebigshake', role: 'Product Manager / Product Feed', unit: 'MAIL & FEED' },
+        // MEDIA & DOCS
+        { name: 'Даня Апраксин', tg: 'https://t.me/bub1er', role: 'Engineering Manager / Team Lead of Disk', unit: 'MEDIA & DOCS' },
+        { name: 'Слава Конов', tg: 'https://t.me/skk_work', role: 'Senior Product Manager / Product Media', unit: 'MEDIA & DOCS' },
+        { name: 'Лиза Трефилова', tg: 'https://t.me/trefilovaliza', role: 'Product Manager / Product Docs', unit: 'MEDIA & DOCS' },
+        { name: 'Денис Чистяков', tg: 'https://t.me/Denis_9_9', role: 'Team Lead / Docs', unit: 'MEDIA & DOCS' },
+        // ALTAI & CALENDAR & PLATFORM
+        { name: 'Ваня Чернышев', tg: 'https://t.me/ivanchernyshov', role: 'Senior Product Manager / Product Altai', unit: 'ALTAI & CALENDAR & PLATFORM' },
+        { name: 'Сергей Черняк', tg: 'https://t.me/sergeygox', role: 'Engineering Manager / Team Lead of Altai', unit: 'ALTAI & CALENDAR & PLATFORM' },
+        { name: 'Миша Батухтин', tg: 'https://t.me/mishab', role: 'Team Lead / Platform', unit: 'ALTAI & CALENDAR & PLATFORM' },
+        // Functional leads
+        { name: 'Варя Копылова', tg: 'https://t.me/Vareni4ek', role: 'Support Lead', unit: '' },
+        { name: 'Ольга Рагимова', tg: 'https://t.me/olgaragimova', role: 'UX Research Lead', unit: '' },
+        { name: 'Федя Кашаев', tg: 'https://t.me/fedormsu', role: 'DevOps Lead', unit: '' },
+        { name: 'Денис Миронов', tg: 'https://t.me/booblik', role: 'QA Lead', unit: '' },
+        { name: 'Пономарев', tg: 'https://t.me/idanpon', role: 'Data Analytics Lead', unit: '' }
     ];
 
     const STORAGE_KEY = 'onboarding-checklist-state';
@@ -3126,7 +3134,7 @@
     contactsBank.forEach((c, i) => {
         const opt = document.createElement('option');
         opt.value = i;
-        opt.textContent = c.name + (c.role ? ' — ' + c.role : '');
+        opt.textContent = c.name + (c.role ? ' — ' + c.role : '') + (c.unit ? ' [' + c.unit + ']' : '');
         leadSelect.appendChild(opt);
     });
 
@@ -3149,7 +3157,7 @@
         contactsBank.forEach((c, i) => {
             const opt = document.createElement('option');
             opt.value = i;
-            opt.textContent = c.name + (c.role ? ' — ' + c.role : '');
+            opt.textContent = c.name + (c.role ? ' — ' + c.role : '') + (c.unit ? ' [' + c.unit + ']' : '');
             if (selectedIdx !== undefined && selectedIdx === i) opt.selected = true;
             sel.appendChild(opt);
         });
